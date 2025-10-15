@@ -1,0 +1,81 @@
+using Allure.Net.Commons;
+using Allure.NUnit;
+using Allure.NUnit.Attributes;
+using Automation_Framework.Framework.ElementWrappers;
+using Automation_Framework.Framework.Logging;
+using Automation_Framework.Framework.PowerApps.ElementWrappers;
+using Automation_Framework.Framework.WebDriver;
+using log4net;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+
+
+namespace Automation_Framework
+{
+    [AllureNUnit]
+    [AllureSuite("Default Suite")]
+    public class BaseTest
+    {
+        protected IWebDriver driver;        
+        [OneTimeSetUp]
+        public void GlobalSetup()
+        {            
+            AllureLifecycle.Instance.CleanupResultDirectory();            
+            driver = WebDriverFactory.GetChromeDriver();            
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            var testName = TestContext.CurrentContext.Test.Name;
+            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entityrecord&etn=space_spacecraft&id=4d8b8ea5-0f9e-f011-b41b-7ced8d5e2a69");
+            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            LoginPowerApps("vbelchev@hsdyn.com", "test123");
+            Logger.SetLogFileForTest(testName);
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            string? logFilePath = Logger.GetCurrentLogFilePath();
+
+            if (File.Exists(logFilePath))
+            {
+                byte[] logBytes = File.ReadAllBytes(logFilePath);
+                AllureApi.AddAttachment("Test Execution Logs", "text/plain", logBytes, ".txt");
+            }
+
+            var testStatus = TestContext.CurrentContext.Result.Outcome.Status;
+
+            if (testStatus == NUnit.Framework.Interfaces.TestStatus.Failed)
+            {
+                var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
+                var screenshotBytes = screenshot.AsByteArray;
+                AllureApi.AddAttachment("Screenshot", "image/png", screenshotBytes);
+            }
+        }
+
+        [OneTimeTearDown]
+        public void GlobalTearDown() 
+        {
+            driver.Dispose();
+            LogManager.Shutdown();
+        }
+       
+
+        public void LoginPowerApps(string username, string password)
+        {
+            var nextButton = new Button(driver, By.Id("idSIButton9"), "Next Button");
+            
+            var emailField = new Textbox(driver, By.Id("i0116"), "Email Field");
+            emailField.SendKeys(username);
+            nextButton.Click();
+            Thread.Sleep(2000);
+            nextButton.Click();
+                      
+            
+        }
+
+
+    }
+}

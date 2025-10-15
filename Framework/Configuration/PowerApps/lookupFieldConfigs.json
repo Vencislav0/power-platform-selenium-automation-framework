@@ -1,0 +1,38 @@
+﻿{
+  "country": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'country')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Country, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'country') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'country')]"
+  },
+
+  "spacecraft": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'spacecraft')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Spacecraft, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'spacecraft') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'spacecraft')]"
+  },
+
+  "spaceport": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'spaceport')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Spaceport, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'spaceport') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'spaceport')]"
+  },
+
+  "spacecraftmodel": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'spacecraftmodel')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Spacecraft Model, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'spacecraftmodel') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'spacecraftmodel')]"
+  },
+
+  "fleet": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'fleet')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Fleet, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'fleet') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'fleet')]"
+  }
+
+
+}

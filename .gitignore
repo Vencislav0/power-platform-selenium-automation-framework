@@ -1,0 +1,12 @@
+# Build results/
+*.log
+bin/
+obj/
+.vs/
+
+# Allure test output
+allure-results/
+allure-report/
+
+# Configuration files
+appsettings.json
