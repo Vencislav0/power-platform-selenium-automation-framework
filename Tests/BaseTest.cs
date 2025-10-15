@@ -10,7 +10,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
 
-namespace Automation_Framework
+namespace Automation_Framework.Tests
 {
     [AllureNUnit]
     [AllureSuite("Default Suite")]
