@@ -14,12 +14,15 @@ namespace Automation_Framework.Framework.ElementWrappers
         protected By _locator;
         protected string _name;
         protected Label formElement;
+        protected Textbox nameField;
         public BaseForm(IWebDriver driver, By locator, string name) 
         { 
             _driver = driver;
             _locator = locator;
             _name = name;
+
             formElement = new Label(driver, locator, name);
+            nameField = new Textbox(driver, By.XPath("//input[@aria-label='Name']"), "Name Field");
 
         }
 
@@ -31,6 +34,16 @@ namespace Automation_Framework.Framework.ElementWrappers
         public bool IsFormElementVisible()
         {
             return formElement.IsDisplayed();
+        }
+
+        public string GetFormTitle()
+        {
+            return new Label(_driver, By.Id("header_title"), "Form Title/Name").GetText();
+        }
+
+        public void CompleteNameField(string input)
+        {
+            nameField.SendKeys(input);
         }
     }
 }

@@ -46,26 +46,46 @@ namespace Automation_Framework.Framework.Utilities
 
         public ICollection<IWebElement> WaitUntilAllVisibleAndReturn()
         {
-            var elements = wait.Until(driver =>
-            {
-                var elements = driver.FindElements(locator);
-                Logger.Debug($"Found {elements.Count} elements... checking visibility");
-                return elements.All(e => e.Displayed) && elements.Count > 0 ? elements : null;
-            });
+            List<IWebElement> elements;
 
-            return elements.ToList();
+            try
+            {
+                elements = wait.Until(driver =>
+                {
+                    var foundElements = driver.FindElements(locator);
+                    Logger.Debug($"Found {foundElements.Count} elements... checking visibility");
+                    return foundElements.All(e => e.Displayed) && foundElements.Count > 0 ? foundElements : null;
+                }).ToList();
+            }
+            catch (WebDriverTimeoutException)
+            {
+                Logger.Warn("Timeout waiting for visible elements. Returning empty list.");
+                elements = new List<IWebElement>();
+            }
+
+            return elements;
         }
 
         public ICollection<IWebElement> WaitUntilAllVisibleAndReturn(WebDriverWait wait)
-        {            
-            var elements = wait.Until(driver =>
-            {
-                var elements = driver.FindElements(locator);
-                Logger.Debug($"Found {elements.Count} elements... checking visibility");
-                return elements.All(e => e.Displayed) && elements.Count > 0 ? elements : null;
-            });
+        {
+            List<IWebElement> elements;
 
-            return elements.ToList();
+            try
+            {
+                elements = wait.Until(driver =>
+                {
+                    var foundElements = driver.FindElements(locator);
+                    Logger.Debug($"Found {foundElements.Count} elements... checking visibility");
+                    return foundElements.All(e => e.Displayed) && foundElements.Count > 0 ? foundElements : null;
+                }).ToList();
+            }
+            catch (WebDriverTimeoutException)
+            {
+                Logger.Warn("Timeout waiting for visible elements. Returning empty list.");
+                elements = new List<IWebElement>();
+            }
+
+            return elements;
         }
 
         public void WaitUntilVisibleAt(int index)
@@ -131,6 +151,15 @@ namespace Automation_Framework.Framework.Utilities
             {
                 var nameField = dr.FindElement(By.XPath("//input[contains(@data-id, 'space_name')]"));
                 return nameField.Displayed ? nameField : null;
+            });
+        }
+
+        public void WaitUntilRecordSaved()
+        {
+            wait.Until(dr =>
+            {
+                var saveIndicatorText = dr.FindElement(By.XPath("//span[@data-id='header_saveStatus']")).Text;
+                return saveIndicatorText.Contains("Saved");
             });
         }
     }

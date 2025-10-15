@@ -1,4 +1,5 @@
 ﻿using Automation_Framework.Framework.Configuration.PowerApps;
+using Automation_Framework.Framework.Constants;
 using Automation_Framework.Framework.ElementWrappers;
 using Automation_Framework.Framework.Logging;
 using Newtonsoft.Json.Linq;
@@ -44,20 +45,20 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         public void EnterValue(string value)
         {
             customWaits.WaitUntilRecordFormLoads(); 
-            Thread.Sleep(500);
+            Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
             try
             {
                 Logger.Debug($"Sending value to Lookup: {name}");                
                 RemoveRecordFromLookup();                
                 customWaits.WaitUntilVisible();
                 customWaits.WaitUntilEnabled();
-                GetElement(TimeSpan.FromMilliseconds(3000)).Click();
-                Thread.Sleep(500);
-                GetElement(TimeSpan.FromMilliseconds(3000)).SendKeys(value.Trim());                
+                GetElement(Timeouts.EXTRA_SHORT).Click();
+                Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
+                GetElement(Timeouts.EXTRA_SHORT).SendKeys(value.Trim());                
                 Logger.Debug($"value sent: {value}");
-                GetElement(TimeSpan.FromMilliseconds(3000)).Click();
-                customWaits.WaitUntilLookupRecordsLoad(config, TimeSpan.FromMilliseconds(3000));
-                Thread.Sleep(500);
+                GetElement(Timeouts.EXTRA_SHORT).Click();
+                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.EXTRA_SHORT);
+                Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
                 recordsList.GetElementAt(0).Click();
 
             }
@@ -65,7 +66,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             {
                 Logger.Debug("Something went wrong. Attempting fix by clicking Search Button");
                 lookupSearchButton.Click();
-                customWaits.WaitUntilLookupRecordsLoad(config, TimeSpan.FromMilliseconds(500));
+                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.WAIT_FOR_INTERVAL);
                 recordsList.GetElementAt(0).Click();
 
             }
@@ -79,7 +80,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void RemoveRecordFromLookup()
         {           
-            if (recordOnLookup.IsDisplayed(TimeSpan.FromMilliseconds(1000)))
+            if (recordOnLookup.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
             {
                 recordXButton.Click();
             }            
