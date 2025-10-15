@@ -28,7 +28,7 @@ namespace Automation_Framework.Tests
         public void Setup()
         {
             var testName = TestContext.CurrentContext.Test.Name;
-            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entityrecord&etn=space_spacecraft&id=4d8b8ea5-0f9e-f011-b41b-7ced8d5e2a69");
+            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entityrecord&etn=space_spaceflight&id=8ec46733-028d-f011-b4cb-002248860c70");
             //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             LoginPowerApps("vbelchev@hsdyn.com", "test123");
             Logger.SetLogFileForTest(testName);
@@ -60,6 +60,14 @@ namespace Automation_Framework.Tests
         {
             driver.Dispose();
             LogManager.Shutdown();
+        }
+
+        [Test]
+        public void testing()
+        {
+            var missionTypeChoice = new Choice(driver, By.XPath("//button[@aria-label='Mission Type']"), "Mission Type Choice");
+            missionTypeChoice.SelectChoice("Passenger");
+            Thread.Sleep(3000);
         }
        
 
