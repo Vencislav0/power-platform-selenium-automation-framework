@@ -64,5 +64,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             newButton.Click();
         }
+
+        
     }
 }
