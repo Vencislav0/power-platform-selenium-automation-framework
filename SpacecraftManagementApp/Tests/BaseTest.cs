@@ -5,6 +5,7 @@ using Automation_Framework.Framework.ElementWrappers;
 using Automation_Framework.Framework.Logging;
 using Automation_Framework.Framework.PowerApps.ElementWrappers;
 using Automation_Framework.Framework.WebDriver;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
 using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -65,11 +66,12 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
         [Test]
         public void testing()
         {
-            var operatingCompanyLookup = new Lookup(driver, By.XPath("//input[@aria-label='Operating Company, Lookup']"), "operatingCompany", "operating lookup");
-            var spacecraftModelLookup = new Lookup(driver, By.XPath("//input[@aria-label='Spacecraft Model, Lookup']"), "spacecraftModel", "model lookup");
-
-            spacecraftModelLookup.EnterValue("Stellar");
-            operatingCompanyLookup.EnterValue("Nova");
+           var spacecraftForm = new SpacecraftForm(driver);
+           var sidemapForm = new SideMapForm(driver);
+            sidemapForm.ClickSidemapItem("Spacecrafts");
+            spacecraftForm.ClickNewButtonFromToolBar();
+            spacecraftForm.FillForm();
+            spacecraftForm.ClickSaveButtonFromToolBar();
         }
 
         public void LoginPowerApps(string username, string password)

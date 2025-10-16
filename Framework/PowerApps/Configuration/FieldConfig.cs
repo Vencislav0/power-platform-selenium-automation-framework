@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Automation_Framework.Framework.Configuration.PowerApps
+namespace Automation_Framework.Framework.PowerApps.PowerAppsss
 {
     public class FieldConfig
     {

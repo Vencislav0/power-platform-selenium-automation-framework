@@ -36,7 +36,7 @@
     <None Update="Framework\Configuration\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Framework\Configuration\PowerApps\lookupFieldConfigs.json">
+    <None Update="Framework\PowerApps\Configuration\lookupFieldConfigs.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Framework\Logging\log4net.config">

@@ -12,8 +12,7 @@ using System.Threading.Tasks;
 namespace Automation_Framework.SpacecraftManagementApp.Pages
 {    
     public class BasePage
-    {
-        protected CustomWaits customWaits;
+    {       
         protected IWebDriver _driver;
         protected Button newButton;
         protected Button saveButton;        
@@ -21,20 +20,13 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages
         { 
             _driver = driver;                       
             newButton = new Button(_driver, By.XPath("//button[@aria-label='New']"), "New Button");
-            saveButton = new Button(_driver, By.XPath("//button[@aria-label='Save (CTRL+S)']"), "New Button");
-            customWaits = new CustomWaits(By.XPath("//div[@id='topBar']"), driver, Timeouts.API);
+            saveButton = new Button(_driver, By.XPath("//button[@aria-label='Save (CTRL+S)']"), "New Button");            
         }
 
         public void ClickNewButtonFromToolBar()
         {
             newButton.Click();
-        }
-
-        public void ClickSaveButtonFromToolBar()
-        {
-            customWaits.WaitUntilRecordSaved();
-            saveButton.Click();           
-        }
+        }        
         
     }
 }

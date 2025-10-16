@@ -1,5 +1,5 @@
-﻿using Automation_Framework.Framework.Configuration.PowerApps;
-using Automation_Framework.Framework.Logging;
+﻿using Automation_Framework.Framework.Logging;
+using Automation_Framework.Framework.PowerApps.PowerAppsss;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;

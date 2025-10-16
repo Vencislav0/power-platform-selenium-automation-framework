@@ -1,7 +1,7 @@
-﻿using Automation_Framework.Framework.Configuration.PowerApps;
-using Automation_Framework.Framework.Constants;
+﻿using Automation_Framework.Framework.Constants;
 using Automation_Framework.Framework.ElementWrappers;
 using Automation_Framework.Framework.Logging;
+using Automation_Framework.Framework.PowerApps.PowerAppsss;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.DevTools.V136.BackgroundService;
@@ -27,7 +27,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected FieldConfig config;
         public Lookup(IWebDriver driver, By locator, string lookupType, string name) : base(driver, locator, name)
         {
-            String lookupData = File.ReadAllText($"{AppContext.BaseDirectory}/Framework/Configuration/PowerApps/lookupFieldConfigs.json");
+            String lookupData = File.ReadAllText($"{AppContext.BaseDirectory}/Framework/PowerApps/Configuration/lookupFieldConfigs.json");
 
             Dictionary<string, FieldConfig> lookupConfigs =
                 JsonSerializer.Deserialize<Dictionary<string, FieldConfig>>(lookupData);
@@ -45,7 +45,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         public void EnterValue(string value)
         {
             customWaits.WaitUntilRecordFormLoads(); 
-            Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
+            //Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
             try
             {
                 Logger.Debug($"Sending value to Lookup: {name}");                
@@ -53,7 +53,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 customWaits.WaitUntilVisible();
                 customWaits.WaitUntilEnabled();
                 GetElement(Timeouts.EXTRA_SHORT).Click();
-                Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
+                //Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
                 GetElement(Timeouts.EXTRA_SHORT).SendKeys(value.Trim());                
                 Logger.Debug($"value sent: {value}");
                 GetElement(Timeouts.EXTRA_SHORT).Click();
