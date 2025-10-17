@@ -21,9 +21,29 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 
             AllureApi.Step("Navigating to Spacecraft View, and open existing spacecraft record", () =>
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");                
-                //spacecraftView.OpenRecord()
+                sidemapForm.ClickSidemapItem("Spacecrafts");
+                spacecraftView.OpenRecord(1);
             });
+
+            AllureApi.Step("Changing the spacecraft model to commercial and verifying Operating Company Lookup is Displayed", () =>
+            {
+                spacecraftForm.SelectSpacecraftModel("Commercial");
+                Assert.That(spacecraftForm.IsOperatingCompanyDisplayed(), Is.True);
+            });
+
+            AllureApi.Step("Changing the spacecraft model to research and verifying Organisation Type Choice is Displayed", () =>
+            {
+                spacecraftForm.SelectSpacecraftModel("Research");
+                Assert.That(spacecraftForm.IsOrganisationTypeFieldDisplayed(), Is.True);
+            });
+
+            AllureApi.Step("Changing the spacecraft model to military and verifying Is Armed? Choice is Displayed", () =>
+            {
+                spacecraftForm.SelectSpacecraftModel("Military");
+                Assert.That(spacecraftForm.IsArmedDisplayed(), Is.True);
+            });
+
+
         }
     }
 }

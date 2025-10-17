@@ -1,4 +1,5 @@
-﻿using Automation_Framework.Framework.Logging;
+﻿using Automation_Framework.Framework.ElementWrappers;
+using Automation_Framework.Framework.Logging;
 using Automation_Framework.Framework.PowerApps.PowerAppsss;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
@@ -62,6 +63,10 @@ namespace Automation_Framework.Framework.Utilities
                 Logger.Warn("Timeout waiting for visible elements. Returning empty list.");
                 elements = new List<IWebElement>();
             }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
 
             return elements;
         }
@@ -83,6 +88,10 @@ namespace Automation_Framework.Framework.Utilities
             {
                 Logger.Warn("Timeout waiting for visible elements. Returning empty list.");
                 elements = new List<IWebElement>();
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
             }
 
             return elements;
@@ -162,5 +171,37 @@ namespace Automation_Framework.Framework.Utilities
                 return saveIndicatorText.Contains("Saved");
             });
         }
+
+        public void WaitUntilElementTextChanges(string textBefore)
+        {           
+            wait.Until(dr =>
+            {
+                try
+                {
+
+                    var elementTextAfter = dr.FindElement(locator).Text;
+
+
+                    Logger.Debug($"Before: {textBefore}, After: {elementTextAfter}");
+
+
+                    return textBefore != elementTextAfter;
+                }
+                catch (StaleElementReferenceException)
+                {
+
+                    Logger.Debug("Element became stale, retrying...");
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    // Optionally log the error if needed
+                    Logger.Debug($"Error while waiting: {ex.Message}");
+                    return false;
+                }
+
+            });
+        }
+            
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Automation_Framework.Framework.Constants
+namespace Automation_Framework.Framework.PowerApps.Constants
 {
     public static class LookupTypes
     {

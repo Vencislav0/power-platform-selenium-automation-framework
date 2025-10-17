@@ -51,13 +51,25 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         public void CompleteField(string fieldName, string input)
         {
             var field = new Textbox(_driver, By.XPath($"//input[@aria-label='{fieldName}']"), $"{fieldName} Field");
+            field.SendKeys(Keys.Control + "a");
+            field.SendKeys(Keys.Backspace);
             field.SendKeys(input);
         }
 
-        public void ClickSaveButtonFromToolBar()
+        public string GetFieldValue(string fieldName)
+        {
+            var field = new Textbox(_driver, By.XPath($"//input[@aria-label='{fieldName}']"), $"{fieldName} Field");
+
+            return field.GetAttribute("title");
+        }
+
+        public void ClickSaveButtonFromToolBar(bool shouldWait)
         {            
             saveButton.Click();
-            customWaits.WaitUntilRecordSaved();
+            if (shouldWait)
+            {
+                customWaits.WaitUntilRecordSaved();
+            }            
         }
 
         public void ClickNewButtonFromToolBar()

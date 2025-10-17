@@ -1,6 +1,7 @@
 using Allure.Net.Commons;
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
+using Automation_Framework.Framework.Constants;
 using Automation_Framework.Framework.ElementWrappers;
 using Automation_Framework.Framework.Logging;
 using Automation_Framework.Framework.PowerApps.ElementWrappers;
@@ -20,8 +21,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
         protected IWebDriver driver;        
         [OneTimeSetUp]
         public void GlobalSetup()
-        {            
-            AllureLifecycle.Instance.CleanupResultDirectory();            
+        {                                   
             driver = WebDriverFactory.GetChromeDriver();            
         }
 
@@ -29,9 +29,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
         public void Setup()
         {
             var testName = TestContext.CurrentContext.Test.Name;
-            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entitylist&etn=space_maintenance&viewid=b4d4d759-f4de-49cb-b88c-d0abb278bdf3&viewType=1039");
-            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            LoginPowerApps("alans@CRM581863.onmicrosoft.com", "e0SZ(5Bz4^r[670~w]JfkT3dMIVg#${9");
+            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entitylist&etn=space_maintenance&viewid=b4d4d759-f4de-49cb-b88c-d0abb278bdf3&viewType=1039");            
+            LoginPowerApps("vbelchev@hsdyn.com", "test123");
             Logger.SetLogFileForTest(testName);
         }
 
@@ -69,10 +68,13 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             var nextButton = new Button(driver, By.Id("idSIButton9"), "Next Button");
             
             var emailField = new Textbox(driver, By.Id("i0116"), "Email Field");
-            var passwordField = new Textbox(driver, By.Id("i0118"), "Password Field");
-            emailField.SendKeys(username);           
+
+            if (!emailField.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                return;
+            }
+            emailField.SendKeys(username);
             nextButton.Click();
-            passwordField.SendKeys(password);
             Thread.Sleep(2000);
             nextButton.Click();
                       

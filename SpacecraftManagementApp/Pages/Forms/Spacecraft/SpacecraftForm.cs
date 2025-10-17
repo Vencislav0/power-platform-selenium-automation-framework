@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Automation_Framework.Framework.ElementWrappers;
+using Automation_Framework.Framework.PowerApps.Constants;
 
 namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
 {
@@ -18,6 +20,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         protected Lookup fleetLookup;
         protected Choice organizationTypeChoice;
         protected Choice isArmedChoice;
+        protected Label errorMessage;
+        protected Button errorMessageOkButton;
         public SpacecraftForm(IWebDriver driver) : base(driver, By.XPath(""), "Spacecraft Form")  
         {
             countryLookup = new Lookup(driver, By.XPath("//input[@aria-label='Country, Lookup']"), LookupTypes.Country, "Country Lookup");
@@ -28,6 +32,9 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
 
             organizationTypeChoice = new Choice(driver, By.XPath("//button[@aria-label='Organisation Type']"), "Organisation Type Choice");
             isArmedChoice = new Choice(driver, By.XPath("//button[@aria-label='Is Armed?']"), "Is Armed? Choice");
+
+            errorMessage = new Label(driver, By.XPath("//span[@data-id='errorDialog_subtitle']"), "Error Message");
+            errorMessageOkButton = new Button(driver, By.XPath("//button[@data-id='errorOkButton']"), "Error Message OK Button");
         }
 
         public bool IsOrganisationTypeFieldDisplayed()
@@ -55,6 +62,11 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
             CompleteField("Year Of Manifacturer", "2000");
         }
 
+        public void ChangeRegistrationNumber(string input)
+        {
+            CompleteField("Registration Number", input);
+        }
+
         public void SelectCountry(string input)
         {
             countryLookup.EnterValue(input);
@@ -78,6 +90,31 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         public void SelectFleet(string input)
         {
             fleetLookup.EnterValue(input);
+        }
+
+        public void SelectIsArmed(string input)
+        {
+            isArmedChoice.SelectChoice(input);
+        }
+
+        public void SelectOrganizationType(string input)
+        {
+            organizationTypeChoice.SelectChoice(input);
+        }
+
+        public bool IsErrorMessageDisplayed()
+        {
+            return errorMessage.IsDisplayed(Timeouts.SHORT);
+        }
+
+        public string GetErrorMessageText()
+        {
+            return errorMessage.GetText();
+        }
+
+        public void ClickErrorOkayButton()
+        {
+            errorMessageOkButton.Click();
         }
 
 

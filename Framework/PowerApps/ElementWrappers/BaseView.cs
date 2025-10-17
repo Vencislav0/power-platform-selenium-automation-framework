@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -54,7 +55,14 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void OpenRecord(string name)
         {
-            var record = new Label(_driver, By.XPath($"//label[@aria-label='${name}']/ancestor::div[contains(@aria-label, 'Press SPACE to')]"), $"{name} Record");
+            var record = new Label(_driver, By.XPath($"{_recordLocator}//label[@aria-label='{name}']"), $"{name} Record");
+
+            record.DoubleClick();
+        }
+
+        public void OpenRecord(int index)
+        {
+            var record = new Label(_driver, By.XPath($"({_recordLocator}//label[@aria-label])[{index}]"), $"{index}st Record");
 
             record.DoubleClick();
         }
@@ -75,6 +83,11 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         public void DeleteAllRecords()
         {
             var recordsCount = GetRecordsCount();
+
+            if(recordsCount <= 0)
+            {
+                return;
+            }
 
             for(int i = 1; i < recordsCount; i++)
             {
