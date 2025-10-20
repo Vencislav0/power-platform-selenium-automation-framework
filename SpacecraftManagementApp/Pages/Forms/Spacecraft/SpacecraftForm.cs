@@ -67,6 +67,11 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
             CompleteField("Registration Number", input);
         }
 
+        public string GetRegistrationNumber()
+        {
+            return GetFieldValue("Registration Number");
+        }    
+
         public void SelectCountry(string input)
         {
             countryLookup.EnterValue(input);
@@ -100,6 +105,11 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         public void SelectOrganizationType(string input)
         {
             organizationTypeChoice.SelectChoice(input);
+        }
+
+        public void ClickOnCountryLookupRecord()
+        {
+            countryLookup.ClickRecordOnLookup();
         }
 
         public bool IsErrorMessageDisplayed()

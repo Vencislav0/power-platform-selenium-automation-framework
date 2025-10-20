@@ -86,5 +86,13 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             }            
         }
 
+        public void ClickRecordOnLookup()
+        {
+            if (recordOnLookup.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
+            {
+                recordOnLookup.Click();
+            }
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 using Automation_Framework.Framework.PowerApps.Constants;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
+using Automation_Framework.SpacecraftManagementApp.Steps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,9 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 {
     public class Spacecraft_Create_Tests : BaseTest
     {
-        private SpacecraftForm _spacecraftForm;
-        private SpacecraftView _spacecraftView;
-        private SideMapForm _sidemapForm;
+        private SpacecraftForm? _spacecraftForm;
+        private SpacecraftView? _spacecraftView;
+        private SideMapForm? _sidemapForm;
 
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
@@ -25,53 +26,23 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         {           
 
             var initialRecordCount = 0;
-            AllureApi.Step("Navigating to Spacecraft View, and clicking New button", () =>
+            AllureApi.Step("Navigating to Spacecraft View, and click New button", () =>
             {
                 sidemapForm.ClickSidemapItem("Spacecrafts");
                 initialRecordCount = spacecraftView.GetRecordsCount();
                 spacecraftForm.ClickNewButtonFromToolBar();
             });
 
-            AllureApi.Step("Filling Name and Year Of Manifacturer fields", () =>
-            {
-                spacecraftForm.FillName("Test");
-                spacecraftForm.FillRandomYear();
-            });
+            SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm, sidemapForm);
 
-            AllureApi.Step("Selecting Country Bulgaria", () =>
+            AllureApi.Step("verifying the creation and deleting it.", () =>
             {
-                spacecraftForm.SelectCountry("Bulgaria");
-            });
-
-            AllureApi.Step("Selecting Spaceport Sofia", () =>
-            {
-                spacecraftForm.SelectSpaceport("Sofia");
-            });
-
-            AllureApi.Step("Selecting Spacecraft Model Stellar Cruiser", () =>
-            {
-                spacecraftForm.SelectSpacecraftModel("Stellar Cruiser");
-            });
-
-            AllureApi.Step("Selecting Operational Company Nova Exploration Council", () =>
-            {
-                spacecraftForm.SelectOperationalCompany("Nova Exploration Council");
-            });
-
-            AllureApi.Step("Selecting Fleet Cosmic Wings Division", () =>
-            {
-                spacecraftForm.SelectFleet("Cosmic Wings Division");
-            });
-
-            AllureApi.Step("Saving the record verifying the creation and deleting it.", () =>
-            {
-                spacecraftForm.ClickSaveButtonFromToolBar(true);
-                spacecraftForm.ChangeRegistrationNumber("BG-TEST");
+                var regNumber = spacecraftForm.GetRegistrationNumber();
                 sidemapForm.ClickSidemapItem("Spacecrafts");
 
                 Assert.That(spacecraftView.GetRecordsCount(), Is.EqualTo(initialRecordCount + 1), "Spacecraft was not displayed on the view");
 
-                spacecraftView.DeleteRecord("BG-TEST");
+                spacecraftView.DeleteRecord(regNumber);
                
             });
         }

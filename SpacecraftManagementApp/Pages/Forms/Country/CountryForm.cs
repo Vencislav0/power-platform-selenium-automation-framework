@@ -18,6 +18,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Country
 
         public string GetCountryCodeValue()
         {
+            customWaits.WaitUntilRecordFormLoads();
             return GetFieldValue("Country Code");
         }
     }

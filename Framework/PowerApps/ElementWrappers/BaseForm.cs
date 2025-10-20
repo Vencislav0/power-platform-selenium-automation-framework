@@ -19,6 +19,8 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected Label formElement;
         protected Button saveButton;
         protected Button newButton;
+        protected Button saveAndCloseButton;
+        protected Label saveStatusHeader;
         protected CustomWaits customWaits;
         public BaseForm(IWebDriver driver, By locator, string name) 
         { 
@@ -29,6 +31,8 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             formElement = new Label(driver, locator, name);           
             newButton = new Button(_driver, By.XPath("//button[@aria-label='New']"), "New Button");
             saveButton = new Button(_driver, By.XPath("//button[@aria-label='Save (CTRL+S)']"), "New Button");
+            saveStatusHeader = new Label(_driver, By.XPath("//span[@data-id='header_saveStatus']"), "Save Status Header");
+            saveAndCloseButton = new Button(_driver, By.XPath("//button[contains(@title, 'Save & Close')]"), "Save & Close Button");
             customWaits = new CustomWaits(By.XPath("//div[@id='topBar']"), driver, Timeouts.API);
 
         }
@@ -60,7 +64,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             var field = new Textbox(_driver, By.XPath($"//input[@aria-label='{fieldName}']"), $"{fieldName} Field");
 
-            return field.GetAttribute("title");
+            return field.GetAttribute("value");
         }
 
         public void ClickSaveButtonFromToolBar(bool shouldWait)
@@ -72,9 +76,22 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             }            
         }
 
+        public string GetSaveStatus()
+        {
+            return saveStatusHeader.GetText();
+        }
+
         public void ClickNewButtonFromToolBar()
         {
             newButton.Click();
+        }
+
+        public void ClickSaveAndCloseButtonFromToolBar()
+        {
+            if (saveAndCloseButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                saveAndCloseButton.Click();
+            }
         }
 
         
