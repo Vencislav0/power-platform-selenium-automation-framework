@@ -1,5 +1,6 @@
-﻿using Automation_Framework.Framework.Configuration.PowerApps;
+﻿using Automation_Framework.Framework.ElementWrappers;
 using Automation_Framework.Framework.Logging;
+using Automation_Framework.Framework.PowerApps.PowerAppsss;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
@@ -46,26 +47,54 @@ namespace Automation_Framework.Framework.Utilities
 
         public ICollection<IWebElement> WaitUntilAllVisibleAndReturn()
         {
-            var elements = wait.Until(driver =>
-            {
-                var elements = driver.FindElements(locator);
-                Logger.Debug($"Found {elements.Count} elements... checking visibility");
-                return elements.All(e => e.Displayed) && elements.Count > 0 ? elements : null;
-            });
+            List<IWebElement> elements;
 
-            return elements.ToList();
+            try
+            {
+                elements = wait.Until(driver =>
+                {
+                    var foundElements = driver.FindElements(locator);
+                    Logger.Debug($"Found {foundElements.Count} elements... checking visibility");
+                    return foundElements.All(e => e.Displayed) && foundElements.Count > 0 ? foundElements : null;
+                }).ToList();
+            }
+            catch (WebDriverTimeoutException)
+            {
+                Logger.Warn("Timeout waiting for visible elements. Returning empty list.");
+                elements = new List<IWebElement>();
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+
+            return elements;
         }
 
         public ICollection<IWebElement> WaitUntilAllVisibleAndReturn(WebDriverWait wait)
-        {            
-            var elements = wait.Until(driver =>
-            {
-                var elements = driver.FindElements(locator);
-                Logger.Debug($"Found {elements.Count} elements... checking visibility");
-                return elements.All(e => e.Displayed) && elements.Count > 0 ? elements : null;
-            });
+        {
+            List<IWebElement> elements;
 
-            return elements.ToList();
+            try
+            {
+                elements = wait.Until(driver =>
+                {
+                    var foundElements = driver.FindElements(locator);
+                    Logger.Debug($"Found {foundElements.Count} elements... checking visibility");
+                    return foundElements.All(e => e.Displayed) && foundElements.Count > 0 ? foundElements : null;
+                }).ToList();
+            }
+            catch (WebDriverTimeoutException)
+            {
+                Logger.Warn("Timeout waiting for visible elements. Returning empty list.");
+                elements = new List<IWebElement>();
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+
+            return elements;
         }
 
         public void WaitUntilVisibleAt(int index)
@@ -133,5 +162,46 @@ namespace Automation_Framework.Framework.Utilities
                 return nameField.Displayed ? nameField : null;
             });
         }
+
+        public void WaitUntilRecordSaved()
+        {
+            wait.Until(dr =>
+            {
+                var saveIndicatorText = dr.FindElement(By.XPath("//span[@data-id='header_saveStatus']")).Text;
+                return saveIndicatorText.Contains("Saved");
+            });
+        }
+
+        public void WaitUntilElementTextChanges(string textBefore)
+        {           
+            wait.Until(dr =>
+            {
+                try
+                {
+
+                    var elementTextAfter = dr.FindElement(locator).Text;
+
+
+                    Logger.Debug($"Before: {textBefore}, After: {elementTextAfter}");
+
+
+                    return textBefore != elementTextAfter;
+                }
+                catch (StaleElementReferenceException)
+                {
+
+                    Logger.Debug("Element became stale, retrying...");
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    // Optionally log the error if needed
+                    Logger.Debug($"Error while waiting: {ex.Message}");
+                    return false;
+                }
+
+            });
+        }
+            
     }
 }

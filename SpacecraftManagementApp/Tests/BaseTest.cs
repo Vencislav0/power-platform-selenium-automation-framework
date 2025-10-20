@@ -1,16 +1,18 @@
 using Allure.Net.Commons;
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
+using Automation_Framework.Framework.Constants;
 using Automation_Framework.Framework.ElementWrappers;
 using Automation_Framework.Framework.Logging;
 using Automation_Framework.Framework.PowerApps.ElementWrappers;
 using Automation_Framework.Framework.WebDriver;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
 using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
 
-namespace Automation_Framework.Tests
+namespace Automation_Framework.SpacecraftManagementApp.Tests
 {
     [AllureNUnit]
     [AllureSuite("Default Suite")]
@@ -19,8 +21,7 @@ namespace Automation_Framework.Tests
         protected IWebDriver driver;        
         [OneTimeSetUp]
         public void GlobalSetup()
-        {            
-            AllureLifecycle.Instance.CleanupResultDirectory();            
+        {                                   
             driver = WebDriverFactory.GetChromeDriver();            
         }
 
@@ -28,8 +29,7 @@ namespace Automation_Framework.Tests
         public void Setup()
         {
             var testName = TestContext.CurrentContext.Test.Name;
-            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entityrecord&etn=space_spacecraft&id=4d8b8ea5-0f9e-f011-b41b-7ced8d5e2a69");
-            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entitylist&etn=space_maintenance&viewid=b4d4d759-f4de-49cb-b88c-d0abb278bdf3&viewType=1039");            
             LoginPowerApps("vbelchev@hsdyn.com", "test123");
             Logger.SetLogFileForTest(testName);
         }
@@ -61,13 +61,18 @@ namespace Automation_Framework.Tests
             driver.Dispose();
             LogManager.Shutdown();
         }
-       
 
+        
         public void LoginPowerApps(string username, string password)
         {
             var nextButton = new Button(driver, By.Id("idSIButton9"), "Next Button");
             
             var emailField = new Textbox(driver, By.Id("i0116"), "Email Field");
+
+            if (!emailField.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                return;
+            }
             emailField.SendKeys(username);
             nextButton.Click();
             Thread.Sleep(2000);

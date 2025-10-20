@@ -47,7 +47,7 @@ namespace Automation_Framework.Framework.ElementWrappers
 
 
 
-        public int Count(By locator)
+        public int Count()
         {
             var elements = GetElements();
             return elements.Count;

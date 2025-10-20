@@ -20,7 +20,7 @@
     "recordsListLocator": "//li[contains(@data-id, 'spaceport')]"
   },
 
-  "spacecraftmodel": {
+  "spacecraftModel": {
     "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'spacecraftmodel')]",
     "searchButtonLocator": "//button[@aria-label='Search records for Spacecraft Model, Lookup field']",
     "recordOnLookupLocator": "//div[contains(@data-id, 'spacecraftmodel') and @aria-label]",
@@ -32,6 +32,13 @@
     "searchButtonLocator": "//button[@aria-label='Search records for Fleet, Lookup field']",
     "recordOnLookupLocator": "//div[contains(@data-id, 'fleet') and @aria-label]",
     "recordsListLocator": "//li[contains(@data-id, 'fleet')]"
+  },
+
+  "operatingCompany": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'operationcompany')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Operating Company, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'operationcompany') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'operationcompany')]"
   }
 
 

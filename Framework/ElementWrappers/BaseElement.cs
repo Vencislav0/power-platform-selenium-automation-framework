@@ -84,6 +84,25 @@ public class BaseElement
         }
     }
 
+    public void DoubleClick()
+    {
+        try
+        {
+            Logger.Debug($"Clicking on: {name}");
+            customWaits.WaitUntilVisible();
+            customWaits.WaitUntilEnabled();
+            var element = GetElement();
+            actions.DoubleClick(element).Perform();
+
+        }
+        catch (Exception ex)
+        {
+
+            Logger.Error($"Failed to click on element: {name}", ex);
+            throw;
+        }
+    }
+
     public string GetText()
     {
         try
