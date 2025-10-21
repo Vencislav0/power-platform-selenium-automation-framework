@@ -64,7 +64,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 
             AllureApi.Step("Verify the prefix value is the same as the country code and deleting the record", () =>
             {
-                Assert.That(prefix, Is.EqualTo(countryCode));
+                Assert.That(prefix, Is.EqualTo(countryCode));  
                 var registrationNumber = spacecraftForm.GetRegistrationNumber();
                 SpacecraftSteps.DeleteSpacecraft(spacecraftForm, sidemapForm, spacecraftView, registrationNumber);
             });
@@ -94,8 +94,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         }
 
         [Test]
-
-        public void RegistrationCodeUpdate_VerifyErrorMessage_WhenInvalidLength()
+        
+        public void RegistrationCodeUpdate_VerifyErrorMessage_WhenInvalidInput()
         {
             AllureApi.Step("Navigating to Spacecraft View, and open existing spacecraft record", () =>
             {
@@ -105,6 +105,14 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 
             var formatToMatch = new Regex(@"^[A-Z]{2,3}-([A-Z0-9]{3,4})$");
 
+            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-INVALID", false);
+            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-test", false);
+            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TEST1", false);
+            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TE", false);
+            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-", false);
+            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BGNG-TEST", false);
+            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "B-TEST", false);
+            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TE$T", false);
             SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-INVALID", false);
 
             AllureApi.Step("Verify that the record didn't save and that the registration number format is incorrect", () =>

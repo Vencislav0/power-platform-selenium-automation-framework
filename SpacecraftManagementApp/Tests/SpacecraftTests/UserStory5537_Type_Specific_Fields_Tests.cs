@@ -22,7 +22,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             AllureApi.Step("Navigating to Spacecraft View, and open existing spacecraft record", () =>
             {
                 sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.OpenRecord(1);
+                spacecraftForm.ClickNewButtonFromToolBar();
             });
 
             AllureApi.Step("Changing the spacecraft model to commercial and verifying Operating Company Lookup is Displayed", () =>
