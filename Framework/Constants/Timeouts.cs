@@ -17,4 +17,5 @@ namespace Automation_Framework.Framework.Constants
         public static readonly TimeSpan DEFAULT_INTERVAL = TimeSpan.FromSeconds(1);
         public static readonly TimeSpan WAIT_FOR_INTERVAL = TimeSpan.FromSeconds(0.5);
     }
+     
 }

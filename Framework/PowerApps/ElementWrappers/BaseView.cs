@@ -1,4 +1,5 @@
-﻿using Automation_Framework.Framework.ElementWrappers;
+﻿using Automation_Framework.Framework.Constants;
+using Automation_Framework.Framework.ElementWrappers;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -62,7 +63,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void OpenRecord(int index)
         {
-            var record = new Label(_driver, By.XPath($"({_recordLocator}//label[@aria-label])[{index}]"), $"{index}st Record");
+            var record = new Label(_driver, By.XPath($"({_recordLocator})[{index}]//div[contains(@col-id, 'space')][1]"), $"{index}st Record");
 
             record.DoubleClick();
         }
@@ -104,6 +105,24 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             Thread.Sleep(500);
             deleteButton.Click();
             notificationDeleteButton.Click();
+        }
+
+        public string GetRecordStatus(string recordName)
+        {
+            var recordStatus = new Label(_driver, By.XPath($"//div[.//label[@aria-label='{recordName}']]/following-sibling::div[contains(@col-id,'space_statuscode')]//label"), $"{recordName} Record Status");
+
+            return recordStatus.GetAttribute("aria-label");
+        }
+
+        public string GetRecordStatus(int index)
+        {
+            var recordStatus = new Label(_driver, By.XPath($"(//div[.//label[@aria-label]]/following-sibling::div[contains(@col-id,'space_statuscode')])[{index}]//label"), $"Record on index: {index} Status");
+
+            if (recordStatus.IsDisplayed(Timeouts.SHORT))
+            {
+                return recordStatus.GetAttribute("aria-label");
+            }
+            return "";       
         }
     }
 }

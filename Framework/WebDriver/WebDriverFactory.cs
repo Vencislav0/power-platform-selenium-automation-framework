@@ -14,6 +14,10 @@ namespace Automation_Framework.Framework.WebDriver
         {
             var options = new ChromeOptions();
             options.AddArgument("--start-maximized");
+            options.AddArgument("--disable-gpu");
+            options.AddArgument("--ignore-certificate-errors");
+            options.AddArgument("--disable-dev-shm-usage");
+            options.PageLoadStrategy = PageLoadStrategy.Normal;
             return new ChromeDriver(options);
         }
     }
