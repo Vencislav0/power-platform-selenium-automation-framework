@@ -124,5 +124,18 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             }
             return "";       
         }
+
+        public List<string> GetAllRecordsStatus()
+        {
+            var recordsCount = GetRecordsCount();
+            var statuses = new List<string>();
+
+            for (int i = 1; i <= recordsCount; i++)
+            {
+                statuses.Add(GetRecordStatus(i));
+            }
+
+            return statuses;
+        }
     }
 }

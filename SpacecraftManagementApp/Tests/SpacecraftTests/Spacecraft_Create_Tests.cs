@@ -33,7 +33,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                 spacecraftForm.ClickNewButtonFromToolBar();
             });
 
-            SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm, sidemapForm);
+            SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
 
             AllureApi.Step("verifying the creation and deleting it.", () =>
             {

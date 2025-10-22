@@ -22,7 +22,9 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         protected Choice isArmedChoice;
         protected Label errorMessage;
         protected Button errorMessageOkButton;
-        public SpacecraftForm(IWebDriver driver) : base(driver, By.XPath(""), "Spacecraft Form")  
+        protected Button createMaintenanceButton;
+
+        public SpacecraftForm(IWebDriver driver) : base(driver, By.XPath("//div[@data-id='grid-container']"), "Spacecraft Form")  
         {
             countryLookup = new Lookup(driver, By.XPath("//input[@aria-label='Country, Lookup']"), LookupTypes.Country, "Country Lookup");
             spaceportLookup = new Lookup(driver, By.XPath("//input[@aria-label='Spaceport, Lookup']"), LookupTypes.Spaceport, "Spaceport Lookup");
@@ -35,6 +37,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
 
             errorMessage = new Label(driver, By.XPath("//span[@data-id='errorDialog_subtitle']"), "Error Message");
             errorMessageOkButton = new Button(driver, By.XPath("//button[@data-id='errorOkButton']"), "Error Message OK Button");
+
+            createMaintenanceButton = new Button(driver, By.XPath("//span[text()='Create Maintenance']"), "Create Maintenance Button");            
         }
 
         public bool IsOrganisationTypeFieldDisplayed()
@@ -59,7 +63,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
 
         public void FillRandomYear()
         {
-            CompleteField("Year Of Manifacturer", "2000");
+            CompleteField("Year Of Manifacturer", $"{random.Next(1990, 2026)}");
         }
 
         public void ChangeRegistrationNumber(string input)
@@ -125,6 +129,20 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         public void ClickErrorOkayButton()
         {
             errorMessageOkButton.Click();
+        }
+
+        public void ClickCreateMaintenanceButton()
+        {
+            if (createMaintenanceButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                createMaintenanceButton.Click();
+            }
+            else
+            {
+                overflowButton.Click();
+                createMaintenanceButton.Click();
+            }
+           
         }
 
 
