@@ -19,9 +19,11 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected Label formElement;
         protected Button saveButton;
         protected Button newButton;
+        protected Button overflowButton;
         protected Button saveAndCloseButton;
         protected Label saveStatusHeader;
         protected CustomWaits customWaits;
+        protected Random random;
         public BaseForm(IWebDriver driver, By locator, string name) 
         { 
             _driver = driver;
@@ -30,10 +32,12 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
             formElement = new Label(driver, locator, name);           
             newButton = new Button(_driver, By.XPath("//button[@aria-label='New']"), "New Button");
+            overflowButton = new Button(driver, By.XPath("//button[@data-id='OverflowButton' and contains(@aria-label, 'More commands for')]"), "Overflow Button");
             saveButton = new Button(_driver, By.XPath("//button[@aria-label='Save (CTRL+S)']"), "New Button");
             saveStatusHeader = new Label(_driver, By.XPath("//span[@data-id='header_saveStatus']"), "Save Status Header");
             saveAndCloseButton = new Button(_driver, By.XPath("//button[contains(@title, 'Save & Close')]"), "Save & Close Button");
             customWaits = new CustomWaits(By.XPath("//div[@id='topBar']"), driver, Timeouts.API);
+            random = new Random();
 
         }
 
@@ -68,8 +72,17 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         }
 
         public void ClickSaveButtonFromToolBar(bool shouldWait)
-        {            
-            saveButton.Click();
+        {
+            if (saveButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                saveButton.Click();
+            }
+            else
+            {
+                overflowButton.Click();
+                saveButton.Click();
+            }
+
             if (shouldWait)
             {
                 customWaits.WaitUntilRecordSaved();
@@ -83,7 +96,15 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void ClickNewButtonFromToolBar()
         {
-            newButton.Click();
+            if (newButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                newButton.Click();
+            }
+            else
+            {
+                overflowButton.Click();
+                newButton.Click();
+            }
         }
 
         public void ClickSaveAndCloseButtonFromToolBar()

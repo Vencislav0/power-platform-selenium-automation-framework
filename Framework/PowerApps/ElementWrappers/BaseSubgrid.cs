@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,8 +17,8 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected string _name;
         protected string _subgridLocator = "//div[contains(@data-id, 'dataSetRoot')]";
 
-        public BaseSubgrid(IWebDriver driver, string name) 
-        { 
+        public BaseSubgrid(IWebDriver driver, string name)
+        {
             _driver = driver;
             _locator = new Label(_driver, By.XPath(_subgridLocator), "Subgrid Form");
             _name = name;
@@ -80,6 +81,26 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             var recordStatus = new Label(_driver, By.XPath($"//div[.//span[text()='{recordName}']]/following-sibling::div[contains(@col-id,'space_statuscode')]//label"), $"{recordName} Record Status");
 
             return recordStatus.GetAttribute("aria-label");
+        }
+
+        public int GetRecordsCount()
+        {
+            var records = new ElementsCollection(_driver, By.XPath($"//label[@aria-label]/ancestor::div[contains(@aria-label, 'Press SPACE to')]"), $"{_name} Records");
+
+            return records.Count();
+        }
+
+        public List<string> GetAllRecordsStatus()
+        {
+            var recordsCount = GetRecordsCount();
+            var statuses = new List<string>();
+
+            for (int i = 1; i <= recordsCount; i++)
+            {               
+                statuses.Add(GetRecordStatus(i));
+            }
+
+            return statuses;
         }
     }
 }
