@@ -7,6 +7,7 @@ using Automation_Framework.Framework.Logging;
 using Automation_Framework.Framework.PowerApps.ElementWrappers;
 using Automation_Framework.Framework.WebDriver;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
 using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -17,7 +18,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
     [AllureNUnit]
     [AllureSuite("Default Suite")]
     public class BaseTest
-    {
+    {       
+        protected Random random = new Random();
         protected IWebDriver driver;        
         [OneTimeSetUp]
         public void GlobalSetup()
@@ -80,7 +82,31 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
                       
             
         }
+       
+        public void AssertEqualWithRefresh<T>(Func<T> actualResult, T expectedResult, SpacecraftForm spacecraftForm, int maxRetries = 3)
+        {
+            var retryCount = 0;
+            
+            while (retryCount < maxRetries)
+            {
 
+                var actual = actualResult();
 
+                if (Equals(actual, expectedResult))
+                {                    
+                    return;
+                }
+
+                retryCount++;
+                if (retryCount < maxRetries)
+                {
+                    Logger.Debug($"Attempt {retryCount + 1} failed, refreshing and retrying..");
+                    spacecraftForm.ClickRefreshButtonFromToolBar();
+                    Thread.Sleep(1000);
+                }
+            }
+
+            Assert.Fail($"Value did not match expected '{expectedResult}' after {maxRetries} retries.");
+        }
     }
 }

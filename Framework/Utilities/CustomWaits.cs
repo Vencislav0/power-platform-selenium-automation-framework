@@ -194,8 +194,7 @@ namespace Automation_Framework.Framework.Utilities
                     return false;
                 }
                 catch (Exception ex)
-                {
-                    // Optionally log the error if needed
+                {                    
                     Logger.Debug($"Error while waiting: {ex.Message}");
                     return false;
                 }

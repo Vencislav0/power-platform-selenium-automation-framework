@@ -66,7 +66,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             {
                 Logger.Debug("Something went wrong. Attempting fix by clicking Search Button");
                 lookupSearchButton.Click();
-                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.WAIT_FOR_INTERVAL);
+                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.DEFAULT_INTERVAL);
                 recordsList.GetElementAt(0).Click();
 
             }

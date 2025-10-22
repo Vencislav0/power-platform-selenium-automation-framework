@@ -3,6 +3,8 @@ using Automation_Framework.Framework.ElementWrappers;
 using Automation_Framework.Framework.Logging;
 using Automation_Framework.Framework.Utilities;
 using OpenQA.Selenium;
+using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,24 +21,30 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected Label formElement;
         protected Button saveButton;
         protected Button newButton;
+        protected Button refreshButton;
         protected Button overflowButton;
         protected Button saveAndCloseButton;
         protected Label saveStatusHeader;
+        protected Label titleHeader;
         protected CustomWaits customWaits;
         protected Random random;
+        protected WebDriverWait wait;
         public BaseForm(IWebDriver driver, By locator, string name) 
         { 
             _driver = driver;
             _locator = locator;
             _name = name;
 
-            formElement = new Label(driver, locator, name);           
+            formElement = new Label(_driver, locator, name);           
             newButton = new Button(_driver, By.XPath("//button[@aria-label='New']"), "New Button");
-            overflowButton = new Button(driver, By.XPath("//button[@data-id='OverflowButton' and contains(@aria-label, 'More commands for')]"), "Overflow Button");
+            overflowButton = new Button(_driver, By.XPath("//button[@data-id='OverflowButton' and contains(@aria-label, 'More commands for')]"), "Overflow Button");
             saveButton = new Button(_driver, By.XPath("//button[@aria-label='Save (CTRL+S)']"), "New Button");
             saveStatusHeader = new Label(_driver, By.XPath("//span[@data-id='header_saveStatus']"), "Save Status Header");
             saveAndCloseButton = new Button(_driver, By.XPath("//button[contains(@title, 'Save & Close')]"), "Save & Close Button");
             customWaits = new CustomWaits(By.XPath("//div[@id='topBar']"), driver, Timeouts.API);
+            titleHeader = new Label(_driver, By.XPath("//h1[@data-id='header_title']"), "Form Title");
+            refreshButton = new Button(_driver, By.XPath("//button[@aria-label='Refresh']"), "Refresh Button");
+            wait = new WebDriverWait(_driver, Timeouts.DEFAULT_WAIT);
             random = new Random();
 
         }
@@ -50,12 +58,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             return formElement.IsDisplayed();
         }
-
-        public string GetFormTitle()
-        {
-            return new Label(_driver, By.Id("header_title"), "Form Title/Name").GetText();
-        }
-
+     
         public void CompleteField(string fieldName, string input)
         {
             var field = new Textbox(_driver, By.XPath($"//input[@aria-label='{fieldName}']"), $"{fieldName} Field");
@@ -68,7 +71,11 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             var field = new Textbox(_driver, By.XPath($"//input[@aria-label='{fieldName}']"), $"{fieldName} Field");
 
-            return field.GetAttribute("value");
+            return wait.Until(driver =>
+            {
+                var value = field.GetAttribute("value");
+                return !string.IsNullOrEmpty(value) ? value : null;
+            });
         }
 
         public void ClickSaveButtonFromToolBar(bool shouldWait)
@@ -87,6 +94,19 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             {
                 customWaits.WaitUntilRecordSaved();
             }            
+        }
+
+        public void ClickRefreshButtonFromToolBar()
+        {
+            if (refreshButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                refreshButton.Click();
+            }
+            else
+            {
+                overflowButton.Click();
+                refreshButton.Click();
+            }
         }
 
         public string GetSaveStatus()
@@ -113,8 +133,48 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             {
                 saveAndCloseButton.Click();
             }
+            else
+            {
+                overflowButton.Click();
+                saveAndCloseButton.Click();
+            }
         }
 
-        
+        public string GetFormTitleText()
+        {
+            return titleHeader.GetAttribute("title");
+        }
+
+        public void WaitUntilFormTitleChanges(string titleBefore)
+        {
+            wait.Until(dr =>
+            {
+                try
+                {
+
+                    var elementTextAfter = dr.FindElement(By.XPath("//h1[@data-id='header_title']")).GetAttribute("title");
+
+
+                    Logger.Debug($"Before: {titleBefore}, After: {elementTextAfter}");
+
+
+                    return titleBefore != elementTextAfter && !string.IsNullOrEmpty(elementTextAfter);
+                }
+                catch (StaleElementReferenceException)
+                {
+
+                    Logger.Debug("Element became stale, retrying...");
+                    return false;
+                }
+                catch (Exception ex)
+                {                    
+                    Logger.Debug($"Error while waiting: {ex.Message}");
+                    return false;
+                }
+
+            });
+        }
+
+
     }
 }

@@ -29,7 +29,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         [Test]
         public void OnSpacecraftCreate_VerifyRegistrationNumber_IsGeneratedWithCorrectFormat()
         {
-            AllureApi.Step("Navigating to Spacecraft View, and clicking new button", () =>
+            AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
             {
                 sidemapForm.ClickSidemapItem("Spacecrafts");
                 spacecraftForm.ClickNewButtonFromToolBar();
@@ -37,7 +37,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 
             AllureApi.Step("Create a spacecraft", () =>
             {
-                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm, sidemapForm);
+                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
             });
 
 

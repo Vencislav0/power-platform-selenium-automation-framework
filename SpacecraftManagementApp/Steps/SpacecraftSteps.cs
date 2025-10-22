@@ -13,7 +13,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
     public static class SpacecraftSteps
     {
 
-        public static void CreateMilitarySpacecraft(SpacecraftForm spacecraftForm, SideMapForm sidemapForm)
+        public static void CreateMilitarySpacecraft(SpacecraftForm spacecraftForm)
         {
 
             AllureApi.Step("Filling Name and Year Of Manifacturer fields", () =>
