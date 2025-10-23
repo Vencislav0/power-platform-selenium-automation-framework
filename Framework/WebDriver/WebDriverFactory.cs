@@ -13,6 +13,8 @@ namespace Automation_Framework.Framework.WebDriver
         public static IWebDriver GetChromeDriver()
         {
             var options = new ChromeOptions();
+            options.AddArguments(@"user-data-dir=C:\SeleniumProfiles\PowerApps");
+            options.AddArguments("--profile-directory=Profile 1");
             options.AddArgument("--start-maximized");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--ignore-certificate-errors");

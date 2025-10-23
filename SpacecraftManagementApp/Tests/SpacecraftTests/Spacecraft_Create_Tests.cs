@@ -24,7 +24,6 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         [Test]
         public void CreateSpacecraft_WithValidData_SuccessfullyCreatesSpacecraft()
         {           
-
             var initialRecordCount = 0;
             AllureApi.Step("Navigating to Spacecraft View, and click New button", () =>
             {

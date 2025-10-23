@@ -46,6 +46,10 @@ public class BaseElement
             {
                 return null;
             }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
         });
     }
 
@@ -60,6 +64,10 @@ public class BaseElement
                 return element.Displayed ? element : null;
             }
             catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+            catch (NoSuchElementException)
             {
                 return null;
             }
