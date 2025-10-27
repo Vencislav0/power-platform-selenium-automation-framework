@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 {
-    public class TESTING : BaseTest
+    public class UserStory5515_Associate_Engines_To_Spacecraft : BaseTest
     {
         private SpacecraftForm? _spacecraftForm;
         private SpacecraftView? _spacecraftView;

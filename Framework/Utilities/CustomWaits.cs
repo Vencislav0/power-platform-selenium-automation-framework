@@ -185,7 +185,8 @@ namespace Automation_Framework.Framework.Utilities
                     Logger.Debug($"Before: {textBefore}, After: {elementTextAfter}");
 
 
-                    return textBefore != elementTextAfter;
+
+                    return textBefore.Trim() != elementTextAfter.Trim();
                 }
                 catch (StaleElementReferenceException)
                 {
