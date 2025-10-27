@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 {
@@ -14,6 +15,9 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
     {
         protected IWebDriver _driver;
         protected Label _locator;
+        protected Button newRecordButton;
+        protected Button addExistingRecordButton;
+        protected Button overflowButton;
         protected string _name;
         protected string _subgridLocator = "//div[contains(@data-id, 'dataSetRoot')]";
 
@@ -21,6 +25,9 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             _driver = driver;
             _locator = new Label(_driver, By.XPath(_subgridLocator), "Subgrid Form");
+            newRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'Add New')]"), "New Record Button");
+            overflowButton = new Button(_driver, By.XPath("//button[contains(@id, 'OverflowButton') and contains(@id, 'Subgrid')]"), "Overflow Button: Subgrid");
+            addExistingRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'exists')]"), "Existing Record Button");
             _name = name;
         }
 
@@ -53,7 +60,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void OpenRecord(string recordName)
         {
-            var record = new Label(_driver, By.XPath($"{_subgridLocator}//span[text()='{recordName}']"), $"{recordName} Record");
+            var record = new Label(_driver, By.XPath($"{_subgridLocator}//span[contains(text(), '{recordName}')]"), $"{recordName} Record");
 
             record.Click();
         }
@@ -101,6 +108,38 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             }
 
             return statuses;
+        }
+
+        public void ClickNewRecordButton()
+        {
+            newRecordButton.Click();
+        }
+
+        public void clickAddExistingRecordButton()
+        {
+            if (addExistingRecordButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                addExistingRecordButton.Click();
+            }
+            else
+            {
+                overflowButton.Click();
+                addExistingRecordButton.Click();
+            }
+
+        }
+
+        public void clickAddRecordButton()
+        {
+            if (newRecordButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                newRecordButton.Click();
+            }
+            else
+            {
+                overflowButton.Click();
+                addExistingRecordButton.Click();
+            }
         }
     }
 }

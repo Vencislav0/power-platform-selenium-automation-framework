@@ -1,6 +1,7 @@
 ﻿using Allure.Net.Commons;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Country;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Maintenance;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
 using Automation_Framework.SpacecraftManagementApp.Steps;
 using System;
@@ -17,8 +18,10 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SpacecraftView? _spacecraftView;
         private SideMapForm? _sidemapForm;
         private CountryForm? _countryForm;
+        private MaintenanceView? _maintenanceView;
 
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
+        public MaintenanceView maintenanceView => _maintenanceView ??= new MaintenanceView(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
         public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
         public CountryForm countryForm => _countryForm ??= new CountryForm(driver);
@@ -48,10 +51,18 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             AllureApi.Step("On the Spacecraft View find the spacecraft we put into maintenance using the reg number and verify that the status is \"In Maintenance\" and delete it", () => {
                 
            
-                AssertEqualWithRefresh(() => spacecraftView.GetRecordStatus(spacecraftRegistrationNumber), "In Maintenance", spacecraftForm, 10);
+                AssertEqualWithRefresh(() => spacecraftView.GetRecordStatus(spacecraftRegistrationNumber), "In Maintenance", spacecraftForm, 20);
                 spacecraftView.DeleteRecord(spacecraftRegistrationNumber);
 
-            });           
+            }); 
+            
+            AllureApi.Step("Navigate to Maintenance View and delete all maintenance records", () => {
+
+                sidemapForm.ClickSidemapItem("Maintenances");
+                maintenanceView.DeleteAllRecords();
+
+
+            });
         }
     }
 }

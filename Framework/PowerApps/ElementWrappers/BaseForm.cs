@@ -42,13 +42,17 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             saveStatusHeader = new Label(_driver, By.XPath("//span[@data-id='header_saveStatus']"), "Save Status Header");
             saveAndCloseButton = new Button(_driver, By.XPath("//button[contains(@title, 'Save & Close')]"), "Save & Close Button");
             customWaits = new CustomWaits(By.XPath("//div[@id='topBar']"), driver, Timeouts.API);
-            titleHeader = new Label(_driver, By.XPath("//h1[@data-id='header_title']"), "Form Title");
+            titleHeader = new Label(_driver, By.XPath("//h1[@data-id='header_title']"), "Form Title");            
             refreshButton = new Button(_driver, By.XPath("//button[@aria-label='Refresh']"), "Refresh Button");
             wait = new WebDriverWait(_driver, Timeouts.DEFAULT_WAIT);
             random = new Random();
 
         }
 
+        public void FillName(string input)
+        {
+            CompleteField("Name", input);
+        }
         public void ClickFormElement()
         {
             formElement.Click();

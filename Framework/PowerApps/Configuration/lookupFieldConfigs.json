@@ -39,6 +39,19 @@
     "searchButtonLocator": "//button[@aria-label='Search records for Operating Company, Lookup field']",
     "recordOnLookupLocator": "//div[contains(@data-id, 'operationcompany') and @aria-label]",
     "recordsListLocator": "//li[contains(@data-id, 'operationcompany')]"
+  },
+
+  "engineModel": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'enginemodelid')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Engine Model, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'enginemodelid') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'enginemodelid')]"
+  },
+  "selectRecord": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'MscrmControls')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Select record, Multiple Selection Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'MscrmControls') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'MscrmControls') and @aria-describedBy]"
   }
 
 

@@ -5,6 +5,7 @@ using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,6 +53,37 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
                 spacecraftForm.ClickSaveButtonFromToolBar(true);
             });
 
+        }
+
+        public static int GetEngineCount(SpacecraftForm spacecraftForm)
+        {
+            var engineCount = 0;   
+                if (int.TryParse(spacecraftForm.GetFieldValue("Engine Count"), out int result))
+                {
+                    engineCount = result;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Couldn't parse the engine count something went wrong.");
+                }
+
+                return engineCount;          
+        }
+
+        public static void AddEnginesToSpacecraft(int amount, SpacecraftForm spacecraftForm, EnginesSubgrid engineSubgrid, LookupRecordsForm lookupRecordsForm)
+        {
+            AllureApi.Step($"Adding {amount} engines to spacecraft", () =>
+            {
+                spacecraftForm.NavigateToEnginesTab();
+
+                engineSubgrid.clickAddExistingRecordButton();
+                lookupRecordsForm.ClickAllRecordsButton();
+                for (int i = 1; i <= amount; i++)
+                {
+                    lookupRecordsForm.addRecord(1);
+                }
+                lookupRecordsForm.ClickAddButton();
+            });
         }
 
         public static void DeleteSpacecraft(SpacecraftForm spacecraftForm, SideMapForm sidemapForm, SpacecraftView spacecraftView, string registrationNumber)
