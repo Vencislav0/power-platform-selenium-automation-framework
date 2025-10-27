@@ -52,6 +52,19 @@
     "searchButtonLocator": "//button[@aria-label='Search records for Select record, Multiple Selection Lookup field']",
     "recordOnLookupLocator": "//div[contains(@data-id, 'MscrmControls') and @aria-label]",
     "recordsListLocator": "//li[contains(@data-id, 'MscrmControls') and @aria-describedBy]"
+  },
+  "launchSpaceport": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'launchspaceport')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Launch Space Port, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'launchspaceport') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'launchspaceport') and @aria-selected]"
+  },
+
+  "landingSpaceport": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'landingspaceport')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Landing Space Port, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'landingspaceport') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'landingspaceport') and @aria-selected]"
   }
 
 
