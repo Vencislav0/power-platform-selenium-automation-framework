@@ -14,5 +14,7 @@ namespace Automation_Framework.Framework.PowerApps.Constants
         public const string Fleet = "fleet";
         public const string OperatingCompany = "operatingCompany";
         public const string SpacecraftModel = "spacecraftModel";
+        public const string EngineModel = "engineModel";
+        public const string SelectRecord = "selectRecord";
     }
 }

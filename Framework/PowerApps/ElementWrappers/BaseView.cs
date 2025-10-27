@@ -56,7 +56,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void OpenRecord(string name)
         {
-            var record = new Label(_driver, By.XPath($"{_recordLocator}//label[@aria-label='{name}']"), $"{name} Record");
+            var record = new Label(_driver, By.XPath($"{_recordLocator}//label[contains(@aria-label, '{name}')]"), $"{name} Record");
 
             record.DoubleClick();
         }
@@ -90,7 +90,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 return;
             }
 
-            for(int i = 1; i < recordsCount; i++)
+            for(int i = 1; i <= recordsCount; i++)
             {
                 CheckRecordCheckbox(i);
             }

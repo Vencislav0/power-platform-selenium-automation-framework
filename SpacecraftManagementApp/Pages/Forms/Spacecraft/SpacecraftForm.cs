@@ -22,6 +22,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         protected Choice isArmedChoice;
         protected Label errorMessage;
         protected Button errorMessageOkButton;
+        protected Label engineTab;
         protected Button createMaintenanceButton;
 
         public SpacecraftForm(IWebDriver driver) : base(driver, By.XPath("//div[@data-id='grid-container']"), "Spacecraft Form")  
@@ -38,7 +39,9 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
             errorMessage = new Label(driver, By.XPath("//span[@data-id='errorDialog_subtitle']"), "Error Message");
             errorMessageOkButton = new Button(driver, By.XPath("//button[@data-id='errorOkButton']"), "Error Message OK Button");
 
-            createMaintenanceButton = new Button(driver, By.XPath("//span[text()='Create Maintenance']"), "Create Maintenance Button");            
+            createMaintenanceButton = new Button(driver, By.XPath("//span[text()='Create Maintenance']"), "Create Maintenance Button");
+
+            engineTab = new Label(driver, By.XPath("//li[@aria-label='Engines']"), "Engines Tab");
         }
 
         public bool IsOrganisationTypeFieldDisplayed()
@@ -54,12 +57,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         public bool IsOperatingCompanyDisplayed()
         {
             return operatingCompanyLookup.IsDisplayed(Timeouts.EXTRA_SHORT);
-        }
-
-        public void FillName(string input)
-        {
-            CompleteField("Name", input);           
-        }        
+        }           
 
         public void FillRandomYear()
         {
@@ -143,6 +141,11 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
                 createMaintenanceButton.Click();
             }
            
+        }
+
+        public void NavigateToEnginesTab()
+        {
+            engineTab.Click();
         }
 
 
