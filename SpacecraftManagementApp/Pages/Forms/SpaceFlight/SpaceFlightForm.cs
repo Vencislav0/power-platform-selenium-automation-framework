@@ -14,15 +14,17 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.SpaceFlight
         protected Date startDateField;
         protected Date endDateField;
         protected Choice missionType;
-        protected Lookup launchSpaceport;
-        protected Lookup landingSpaceport;
+        protected Lookup launchSpaceportLookup;
+        protected Lookup landingSpaceportLookup;
+        protected Lookup spacecraftLookup;
         public SpaceFlightForm(IWebDriver driver) : base(driver, By.XPath("//div[@data-id='grid-container']"), "Spaceflight Form")
         {
              startDateField = new Date(driver, By.XPath("//input[contains(@aria-label, 'Date of Start Date/Time')]"), "Start Date/Time");
              endDateField = new Date(driver, By.XPath("//input[contains(@aria-label, 'Date of End Date/Time')]"), "End Date/Time");
              missionType = new Choice(driver, By.XPath("//button[@aria-label='Mission Type']"), "Mission Type Choice");
-             launchSpaceport = new Lookup(driver, By.XPath("//input[@aria-label='Launch Space Port, Lookup']"), "launchSpaceport", "Launch Space Port Lookup");
-             landingSpaceport = new Lookup(driver, By.XPath("//input[@aria-label='Landing Space Port, Lookup']"), "landingSpaceport", "Landing Spaceport Lookup");
+             launchSpaceportLookup = new Lookup(driver, By.XPath("//input[@aria-label='Launch Space Port, Lookup']"), "launchSpaceport", "Launch Space Port Lookup");
+             landingSpaceportLookup = new Lookup(driver, By.XPath("//input[@aria-label='Landing Space Port, Lookup']"), "landingSpaceport", "Landing Spaceport Lookup");
+            spacecraftLookup = new Lookup(driver, By.XPath("//input[@aria-label='Spacecraft, Lookup']"), "spacecraft", "Spacecraft Lookup");
         }
 
 
@@ -43,12 +45,17 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.SpaceFlight
 
         public void SelectLaunchSpaceport(string input)
         {
-            launchSpaceport.EnterValue(input);
+            launchSpaceportLookup.EnterValue(input);
         }
 
         public void SelectLandingSpaceport(string input)
         {
-            landingSpaceport.EnterValue(input);
+            landingSpaceportLookup.EnterValue(input);
+        }
+
+        public void SelectSpacecraft(string input)
+        {
+            spacecraftLookup.EnterValue(input);
         }
     }
 }
