@@ -40,7 +40,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
 
             AllureApi.Step("Selecting Is Armed? option to Yes", () =>
             {
-                spacecraftForm.SelectIsArmed(IsArmedChoices.Yes.ToString());
+                spacecraftForm.SelectIsArmed(IsArmedChoices.Yes);
             });
 
             AllureApi.Step("Selecting Fleet Military Fleet", () =>

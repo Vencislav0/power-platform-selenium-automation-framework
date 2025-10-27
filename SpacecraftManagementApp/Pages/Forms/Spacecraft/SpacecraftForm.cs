@@ -99,9 +99,9 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
             fleetLookup.EnterValue(input);
         }
 
-        public void SelectIsArmed(string input)
+        public void SelectIsArmed(IsArmedChoices value)
         {
-            isArmedChoice.SelectChoice(input);
+            isArmedChoice.SelectChoice(value.ToString());
         }
 
         public void SelectOrganizationType(string input)

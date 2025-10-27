@@ -84,7 +84,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             AllureApi.Step("Try to create with a military model and a commercial fleet and save the record", () =>
             {
                 spacecraftForm.SelectSpacecraftModel("Military");               
-                spacecraftForm.SelectIsArmed(IsArmedChoices.Yes.ToString());
+                spacecraftForm.SelectIsArmed(ChoiceFields.Yes.ToString());
 
                 spacecraftForm.SelectFleet("Commercial");
 

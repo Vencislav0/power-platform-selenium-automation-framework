@@ -11,4 +11,11 @@ namespace Automation_Framework.Framework.PowerApps.Constants
         Yes = 0,
         No = 1
     }
+
+    public enum MissionTypeChoices
+    {
+        Cargo,
+        Passenger,
+        Other
+    }
 }
