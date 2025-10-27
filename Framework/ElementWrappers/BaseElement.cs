@@ -74,21 +74,38 @@ public class BaseElement
         });
     }
 
-    public void Click()
+    public void Click(int retries = 5)
     {
-        try
+        int attempt = 0;
+        while (attempt < retries)
         {
-            Logger.Debug($"Clicking on: {name}");
-            customWaits.WaitUntilVisible();
-            customWaits.WaitUntilEnabled();
-            GetElement().Click();
+            try
+            {
+                Logger.Debug($"Attempt {attempt + 1}: Clicking on {name}");
+                customWaits.WaitUntilVisible();
+                customWaits.WaitUntilEnabled();
 
-        }
-        catch (Exception ex)
-        {
+                GetElement().Click();
 
-            Logger.Error($"Failed to click on element: {name}", ex);
-            throw;
+                Logger.Debug($"Successfully clicked on: {name}");
+                return;
+            }
+            catch (ElementClickInterceptedException)
+            {
+                Logger.Warn($"Click intercepted on {name}, retrying...");                
+            }
+            catch (StaleElementReferenceException)
+            {
+                Logger.Warn($"Element {name} became stale, refreshing reference...");                
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to click on element: {name}", ex);
+                throw;
+            }
+
+            Thread.Sleep(500);
+            attempt++;
         }
     }
 
