@@ -20,11 +20,13 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
     public class BaseTest
     {       
         protected Random random = new Random();
-        protected IWebDriver driver;        
+        protected IWebDriver driver;
+        protected BaseSubgrid subgrid;
         [OneTimeSetUp]
         public void GlobalSetup()
         {                                   
-            driver = WebDriverFactory.GetChromeDriver();            
+            driver = WebDriverFactory.GetChromeDriver();   
+            subgrid = new BaseSubgrid(driver, "Subgrid");
         }
 
         [SetUp]
@@ -82,7 +84,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             
         }
        
-        public void AssertEqualWithRefresh<T>(Func<T> actualResult, T expectedResult, SpacecraftForm spacecraftForm, int maxRetries = 3)
+        public void AssertEqualWithRefresh<T>(Func<T> actualResult, T expectedResult, SpacecraftForm spacecraftForm, int maxRetries = 3, bool subgridRefresh = false)
         {
             var retryCount = 0;
             
@@ -100,13 +102,54 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
                 if (retryCount < maxRetries)
                 {
                     Logger.Debug($"Attempt {retryCount + 1} failed, refreshing and retrying..");
-                    spacecraftForm.ClickRefreshButtonFromToolBar();
-                    Thread.Sleep(1000);
+                    if(subgridRefresh == false)
+                    {
+                        spacecraftForm.ClickRefreshButtonFromToolBar();
+                    }
+                    else
+                    {
+                        subgrid.ClickRefreshButton();
+                    }
+
+                        Thread.Sleep(500);
                 }
             }
 
             Assert.Fail($"Value did not match expected '{expectedResult}' after {maxRetries} retries.");
         }
+
+        public void AssertTrueWithRefresh(Func<bool> condition, SpacecraftForm spacecraftForm, int maxRetries = 3, bool subgridRefresh = false)
+        {
+            var retryCount = 0;
+            while (retryCount < maxRetries)
+            {
+                if (condition())
+                {
+                    return;
+                }
+
+                retryCount++;
+
+                if(retryCount < maxRetries)
+                {
+                    Logger.Debug($"Attempt {retryCount + 1} failed, refreshing and retrying..");
+                    if (subgridRefresh == false)
+                    {
+                        spacecraftForm.ClickRefreshButtonFromToolBar();
+                    }
+                    else
+                    {
+                        subgrid.ClickRefreshButton();
+                    }
+
+                    Thread.Sleep(500);
+                }
+            }
+
+            Assert.Fail($"Condition was not true after {maxRetries} retries with refreshes.");
+
+        }
+        
       
     }
 }

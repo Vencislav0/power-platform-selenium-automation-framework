@@ -19,11 +19,15 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SpacecraftView? _spacecraftView;
         private SideMapForm? _sidemapForm;
         private SpaceFlightForm _spaceFlightForm;
-        
+        private LookupRecordsForm _recordsForm;
+        private EnginesSubgrid? _engineSubgrid;
+        public EnginesSubgrid engineSubgrid => _engineSubgrid ??= new EnginesSubgrid(driver);
+
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
         public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
         public SpaceFlightForm spaceFlightForm => _spaceFlightForm ??= new SpaceFlightForm(driver);
+        public LookupRecordsForm recordsForm => _recordsForm ??= new LookupRecordsForm(driver);
 
         [Test]
         public void Test_TotalFlightHours_MoreThan100_UpdatesEngineStatus()
@@ -39,6 +43,14 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             {
                 SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
                 regNumber = spacecraftForm.GetRegistrationNumber();
+            });
+
+            var enginesStatus = new List<string>();
+
+            AllureApi.Step("Add 2 existing engines to the spacecraft and store the engines status for later comparison", () =>
+            {
+                SpacecraftSteps.AddEnginesToSpacecraft(2, spacecraftForm, engineSubgrid, recordsForm);
+                enginesStatus = engineSubgrid.GetAllRecordsStatus();
             });
 
             AllureApi.Step("Create Space Flight with this spacecraft and set the duration higher than 100 hours", () =>
@@ -64,14 +76,32 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                     spaceFlightForm.FillEndDate(DateTime.Now.Date.AddDays(5).ToString("MM/dd/yyyy"));
                 });
 
-                AllureApi.Step("Save the space flight", () =>
+                AllureApi.Step("Save the space flight and navigate back to the spacecraft", () =>
                 {
-                    spaceFlightForm.ClickSaveAndCloseButtonFromToolBar();
+                    spaceFlightForm.ClickSaveButtonFromToolBar(true);
                     sidemapForm.ClickSidemapItem("Spacecrafts");
-                    spacecraftView.OpenRecord(regNumber);
-                    Thread.Sleep(5000);
+                    spacecraftView.OpenRecord(regNumber);                    
                 });
+               
             });
+
+            AllureApi.Step("Open Engines tab and verify the associated engines's status is lower by 3-5% and delete the spacecraft", () =>
+            {
+                spacecraftForm.NavigateToEnginesTab();
+
+                for (int i = 0; i < enginesStatus.Count; i++)
+                {
+                    var statusBefore = int.Parse(enginesStatus[i]);                   
+                    
+                    AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), spacecraftForm, 10, true);
+                }
+
+                sidemapForm.ClickSidemapItem("Spacecrafts");
+                spacecraftView.DeleteRecord(regNumber);
+            });
+
+
+
         }
     }
 }
