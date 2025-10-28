@@ -1,6 +1,7 @@
 ﻿using Allure.Net.Commons;
 using Automation_Framework.Framework.PowerApps.Constants;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Engine;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
 using System;
 using System.Collections.Generic;
@@ -84,6 +85,17 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
                 }
                 lookupRecordsForm.ClickAddButton();
             });
+        }
+
+        public static void AddNewEnginesToSpacecraft(int amount, SpacecraftForm spacecraftForm, EngineForm engineForm, EnginesSubgrid engineSubgrid, string engineStatus)
+        {
+            spacecraftForm.NavigateToEnginesTab();
+
+            for (int i = 1; i <= amount; i++)
+            {
+                engineSubgrid.ClickNewRecordButton();
+                CommonSteps.CreateEngine(engineForm, engineStatus);
+            }
         }
 
         public static void DeleteSpacecraft(SpacecraftForm spacecraftForm, SideMapForm sidemapForm, SpacecraftView spacecraftView, string registrationNumber)

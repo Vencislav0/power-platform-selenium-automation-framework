@@ -22,5 +22,10 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Engine
             engineModelLookup.EnterValue(input);
         }
 
+        public void ChangeStatusField(string input)
+        {
+            CompleteField("Engine Status", input);
+        }
+
     }
 }
