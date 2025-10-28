@@ -29,6 +29,8 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected CustomWaits customWaits;
         protected Random random;
         protected WebDriverWait wait;
+        protected Label warningNotification;
+
         public BaseForm(IWebDriver driver, By locator, string name) 
         { 
             _driver = driver;
@@ -44,6 +46,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             customWaits = new CustomWaits(By.XPath("//div[@id='topBar']"), driver, Timeouts.API);
             titleHeader = new Label(_driver, By.XPath("//h1[@data-id='header_title']"), "Form Title");            
             refreshButton = new Button(_driver, By.XPath("//button[@aria-label='Refresh']"), "Refresh Button");
+            warningNotification = new Label(driver, By.XPath("//span[@data-id='warningNotification']"), "Warning Notification on Spacecraft Form");
             wait = new WebDriverWait(_driver, Timeouts.DEFAULT_WAIT);
             random = new Random();
 
@@ -177,6 +180,16 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 }
 
             });
+        }
+
+        public bool IsWarningNotificationDisplayed()
+        {
+            return warningNotification.IsDisplayed();
+        }
+
+        public string GetWarningNotificationText()
+        {
+            return warningNotification.GetText();
         }
 
 

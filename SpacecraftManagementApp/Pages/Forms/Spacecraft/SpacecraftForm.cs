@@ -24,7 +24,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         protected Button errorMessageOkButton;
         protected Label engineTab;
         protected Button createMaintenanceButton;
-
+       
         public SpacecraftForm(IWebDriver driver) : base(driver, By.XPath("//div[@data-id='grid-container']"), "Spacecraft Form")  
         {
             countryLookup = new Lookup(driver, By.XPath("//input[@aria-label='Country, Lookup']"), LookupTypes.Country, "Country Lookup");
@@ -147,7 +147,6 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         {
             engineTab.Click();
         }
-
-
+        
     }
 }

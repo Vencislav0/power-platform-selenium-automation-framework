@@ -24,7 +24,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Engine
 
         public void ChangeStatusField(string input)
         {
-            CompleteField("Engine Status", input);
+            CompleteField("Engine Status ", input);
         }
 
     }
