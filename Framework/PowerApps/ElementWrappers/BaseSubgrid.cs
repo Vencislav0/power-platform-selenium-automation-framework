@@ -1,5 +1,6 @@
 ﻿using Automation_Framework.Framework.Constants;
 using Automation_Framework.Framework.ElementWrappers;
+using Automation_Framework.Framework.Logging;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected Button newRecordButton;
         protected Button addExistingRecordButton;
         protected Button overflowButton;
+        protected Button refreshButton;
         protected string _name;
         protected string _subgridLocator = "//div[contains(@data-id, 'dataSetRoot')]";
 
@@ -28,6 +30,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             newRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'Add New')]"), "New Record Button");
             overflowButton = new Button(_driver, By.XPath("//button[contains(@id, 'OverflowButton') and contains(@id, 'Subgrid')]"), "Overflow Button: Subgrid");
             addExistingRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'exists')]"), "Existing Record Button");
+            refreshButton = new Button(driver, By.XPath("//button[contains(@data-id, 'RefreshButton') and contains(@data-id, 'SubGrid')]"), "Refresh Subgrid Button");
             _name = name;
         }
 
@@ -74,7 +77,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public string GetRecordStatus(int index)
         {
-            var recordStatus = new Label(_driver, By.XPath($"(//div[.//label[@aria-label]]/following-sibling::div[contains(@col-id,'space_statuscode')])[{index}]//label"), $"Record on index: {index} Status");
+            var recordStatus = new Label(_driver, By.XPath($"(//div[.//label[@aria-label]]/following-sibling::div[contains(@col-id,'status')])[{index}]//label"), $"Record on index: {index} Status");
 
             if (recordStatus.IsDisplayed(Timeouts.SHORT))
             {
@@ -85,7 +88,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public string GetRecordStatus(string recordName)
         {
-            var recordStatus = new Label(_driver, By.XPath($"//div[.//span[text()='{recordName}']]/following-sibling::div[contains(@col-id,'space_statuscode')]//label"), $"{recordName} Record Status");
+            var recordStatus = new Label(_driver, By.XPath($"//div[.//span[text()='{recordName}']]/following-sibling::div[contains(@col-id,'status')]//label"), $"{recordName} Record Status");
 
             return recordStatus.GetAttribute("aria-label");
         }
@@ -107,6 +110,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 statuses.Add(GetRecordStatus(i));
             }
 
+            Logger.Debug($"Status of all records[{string.Join(',', statuses)}]");
             return statuses;
         }
 
@@ -115,7 +119,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             newRecordButton.Click();
         }
 
-        public void clickAddExistingRecordButton()
+        public void ClickAddExistingRecordButton()
         {
             if (addExistingRecordButton.IsDisplayed(Timeouts.EXTRA_SHORT))
             {
@@ -127,6 +131,19 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 addExistingRecordButton.Click();
             }
 
+        }
+
+        public void ClickRefreshButton()
+        {
+            if (refreshButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                refreshButton.Click();
+            }
+            else
+            {
+                overflowButton.Click();
+                refreshButton.Click();
+            }
         }
 
         public void clickAddRecordButton()

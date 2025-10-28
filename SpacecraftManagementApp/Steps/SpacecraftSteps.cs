@@ -76,7 +76,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
             {
                 spacecraftForm.NavigateToEnginesTab();
 
-                engineSubgrid.clickAddExistingRecordButton();
+                engineSubgrid.ClickAddExistingRecordButton();
                 lookupRecordsForm.ClickAllRecordsButton();
                 for (int i = 1; i <= amount; i++)
                 {
