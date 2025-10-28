@@ -116,7 +116,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void ClickNewRecordButton()
         {
-            newRecordButton.Click();
+            newRecordButton.Click();            
         }
 
         public void ClickAddExistingRecordButton()

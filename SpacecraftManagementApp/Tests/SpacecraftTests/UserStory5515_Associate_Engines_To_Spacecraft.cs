@@ -1,5 +1,6 @@
 ﻿using Allure.Net.Commons;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Engine;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
 using Automation_Framework.SpacecraftManagementApp.Steps;
 using System;
@@ -17,12 +18,15 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SideMapForm? _sidemapForm;
         private EnginesSubgrid? _engineSubgrid;
         private LookupRecordsForm? _lookupRecordsForm;
+        private EngineForm? _engineForm;
 
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
         public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
         public EnginesSubgrid engineSubgrid => _engineSubgrid ??= new EnginesSubgrid(driver);
         public LookupRecordsForm lookupRecordsForm => _lookupRecordsForm ??= new LookupRecordsForm(driver);
+        public EngineForm engineForm => _engineForm ??= new EngineForm(driver);
+
         [Test]
         public void Test_AddEnginesToSpacecraft_SameAmountAsModelEngineCount_AddsEnginesSuccessfuly()
         {
@@ -92,6 +96,30 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                 spacecraftView.DeleteRecord(regNumber);
             });
 
+        }
+
+        [Test]
+        public void Test_AddEngines_WithLowStatus_ShouldNotify_FleetAndSpacecraft()
+        {
+            AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
+            {
+                sidemapForm.ClickSidemapItem("Spacecrafts");
+                spacecraftForm.ClickNewButtonFromToolBar();
+            });
+            
+            var regNumber = "";
+            AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+            {
+                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+                regNumber = spacecraftForm.GetRegistrationNumber();
+
+                
+            });
+
+            AllureApi.Step("Navigate to engines tab and on the subrid add new engine with low status", () =>
+            {
+                SpacecraftSteps.AddNewEnginesToSpacecraft(1, spacecraftForm, engineForm, engineSubgrid, "0");
+            });
         }
     }
 }
