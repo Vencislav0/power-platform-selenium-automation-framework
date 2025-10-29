@@ -10,11 +10,11 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
 {
     public static class CommonSteps
     {
-        public static void CreateEngine(EngineForm engineForm, string engineStatusInput = "100")
+        public static void CreateEngine(EngineForm engineForm, string engineStatusInput = "100", string engineName = "Test Engine")
         {
             AllureApi.Step("Fill the engine name and status then select engine model", () =>
             {
-                engineForm.FillName("Test Engine");
+                engineForm.FillName(engineName);
                 engineForm.ChangeStatusField(engineStatusInput);
                 engineForm.SelectEngineModel("AeroFan X3");
             });

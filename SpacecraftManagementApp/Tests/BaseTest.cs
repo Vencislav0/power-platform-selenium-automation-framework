@@ -118,7 +118,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             Assert.Fail($"Value did not match expected '{expectedResult}' after {maxRetries} retries.");
         }
 
-        public void AssertTrueWithRefresh(Func<bool> condition, SpacecraftForm spacecraftForm, int maxRetries = 3, bool subgridRefresh = false)
+        public void AssertTrueWithRefresh(Func<bool> condition, BaseForm form, int maxRetries = 3, bool subgridRefresh = false)
         {
             var retryCount = 0;
             while (retryCount < maxRetries)
@@ -135,7 +135,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
                     Logger.Debug($"Attempt {retryCount + 1} failed, refreshing and retrying..");
                     if (subgridRefresh == false)
                     {
-                        spacecraftForm.ClickRefreshButtonFromToolBar();
+                        form.ClickRefreshButtonFromToolBar();
                     }
                     else
                     {

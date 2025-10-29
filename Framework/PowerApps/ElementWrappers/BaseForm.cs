@@ -184,7 +184,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public bool IsWarningNotificationDisplayed()
         {
-            return warningNotification.IsDisplayed();
+            return warningNotification.IsDisplayed(Timeouts.DEFAULT_INTERVAL);
         }
 
         public string GetWarningNotificationText()

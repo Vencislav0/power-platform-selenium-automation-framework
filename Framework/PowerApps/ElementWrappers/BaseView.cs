@@ -1,8 +1,10 @@
 ﻿using Automation_Framework.Framework.Constants;
 using Automation_Framework.Framework.ElementWrappers;
+using Automation_Framework.Framework.Utilities;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -18,13 +20,13 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected string _name;
         protected string _recordLocator;
         protected Label testRecord;
-
+        
         public BaseView(IWebDriver driver, By locator, string name)
         {
             _driver = driver;
             _locator = locator;
             _name = name;
-            _recordLocator = "//div[contains(@aria-label, 'Press SPACE to')]";            
+            _recordLocator = "//div[contains(@aria-label, 'Press SPACE to')]";           
         }
 
         public void CheckRecordCheckbox(string recordName)
@@ -56,7 +58,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void OpenRecord(string name)
         {
-            var record = new Label(_driver, By.XPath($"{_recordLocator}//label[contains(@aria-label, '{name}')]"), $"{name} Record");
+            var record = new Label(_driver, By.XPath($"{_recordLocator}//a[contains(@aria-label, '{name}')] | //label[contains(@aria-label, '{name}')]"), $"{name} Record");
 
             record.DoubleClick();
         }
@@ -81,6 +83,20 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             PerformDelete();
 
         }
+
+        public void DeleteAllRecordsWithName(string name)
+        {
+            var allCheckboxes = new ElementsCollection(_driver, By.XPath($"{_recordLocator}[.//label[@aria-label='{name}']]//div[contains(@class, 'ms-Checkbox is')] | {_recordLocator}[.//a[@aria-label='{name}']]//div[contains(@class, 'ms-Checkbox is')]"), $"{name} Checkboxes");
+
+            foreach (var checkbox in allCheckboxes.GetElements())
+            {
+                if (checkbox.GetAttribute("class").Contains("enabled"))
+                {
+                    checkbox.Click();
+                }
+            }
+            PerformDelete();
+        }
         public void DeleteAllRecords()
         {
             var recordsCount = GetRecordsCount();
@@ -101,10 +117,13 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             var deleteButton = new Button(_driver, By.XPath("//button[@aria-label='Delete']"), "Delete Button Navigation bar");
             var notificationDeleteButton = new Button(_driver, By.XPath("//button[@title='Delete']"), "Notification Delete Button");
+            var rowsElementText = new Label(_driver, By.XPath("//span[contains(@class, 'statusTextContainer')]"), "Rows Element Text").GetText();
+            var customWaits = new CustomWaits(By.XPath("//span[contains(@class, 'statusTextContainer')]"), _driver, Timeouts.API);
 
             Thread.Sleep(500);
             deleteButton.Click();
             notificationDeleteButton.Click();
+            customWaits.WaitUntilElementTextChanges(rowsElementText);
         }
 
         public string GetRecordStatus(string recordName)

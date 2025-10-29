@@ -87,14 +87,14 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
             });
         }
 
-        public static void AddNewEnginesToSpacecraft(int amount, SpacecraftForm spacecraftForm, EngineForm engineForm, EnginesSubgrid engineSubgrid, string engineStatus)
+        public static void AddNewEnginesToSpacecraft(int amount, SpacecraftForm spacecraftForm, EngineForm engineForm, EnginesSubgrid engineSubgrid, string engineStatus, string engineName)
         {
             spacecraftForm.NavigateToEnginesTab();
 
             for (int i = 1; i <= amount; i++)
             {
                 engineSubgrid.ClickNewRecordButton();
-                CommonSteps.CreateEngine(engineForm, engineStatus);
+                CommonSteps.CreateEngine(engineForm, engineStatus, engineName);
             }
         }
 

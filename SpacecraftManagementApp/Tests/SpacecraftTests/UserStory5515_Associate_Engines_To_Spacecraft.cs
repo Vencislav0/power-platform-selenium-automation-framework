@@ -22,6 +22,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private EngineForm? _engineForm;
         private FleetView? _fleetView;
         private FleetForm? _fleetForm;
+        private AreaSwitcherForm? _areaSwitcherForm;
+        private EngineView? _engineView;
 
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
@@ -31,6 +33,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         public EngineForm engineForm => _engineForm ??= new EngineForm(driver);
         public FleetView fleetView => _fleetView ??= new FleetView(driver);
         public FleetForm fleetForm => _fleetForm ??= new FleetForm(driver);
+        public AreaSwitcherForm areaSwitcherForm => _areaSwitcherForm ??= new AreaSwitcherForm(driver);
+        public EngineView engineView => _engineView ??= new EngineView(driver);
 
         [Test]
         public void Test_AddEnginesToSpacecraft_SameAmountAsModelEngineCount_AddsEnginesSuccessfuly()
@@ -125,16 +129,21 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 
             AllureApi.Step("Navigate to engines tab and on the subrid add new engine with low status", () =>
             {
-                SpacecraftSteps.AddNewEnginesToSpacecraft(engineAmount, spacecraftForm, engineForm, engineSubgrid, "0");
+                SpacecraftSteps.AddNewEnginesToSpacecraft(engineAmount, spacecraftForm, engineForm, engineSubgrid, "0", "Low Status Engine");
             });
 
-            AllureApi.Step("Verify a warning notification is displayed with the correct text and delete spacecraft", () =>
+            AllureApi.Step("Verify a warning notification is displayed with the correct text and delete spacecraft and engines", () =>
             {
                 Assert.That(spacecraftForm.IsWarningNotificationDisplayed(), Is.True);
                 Assert.That(spacecraftForm.GetWarningNotificationText(), Is.EqualTo($"Warning: This spacecraft has {engineAmount} engine(s) with low status. Please check the engines for maintenance."));
 
                 sidemapForm.ClickSidemapItem("Spacecrafts");
                 spacecraftView.DeleteRecord(regNumber);
+
+                areaSwitcherForm.SelectArea("Engine Department");
+                sidemapForm.ClickSidemapItem("Engines");
+                engineView.DeleteAllRecordsWithName("Low Status Engine");
+                
             });
            
         }
