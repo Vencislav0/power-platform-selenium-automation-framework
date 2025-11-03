@@ -68,10 +68,22 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
      
         public void CompleteField(string fieldName, string input)
         {
-            var field = new Textbox(_driver, By.XPath($"//input[@aria-label='{fieldName}']"), $"{fieldName} Field");
+            var field = new Textbox(_driver, By.XPath($"//input[@aria-label='{fieldName}'] | //textarea[@aria-label='{fieldName}']"), $"{fieldName} Field");
             field.SendKeys(Keys.Control + "a");
             field.SendKeys(Keys.Backspace);
             field.SendKeys(input);
+        }
+
+        public void ClickButton(string buttonName)
+        {
+            var button = new Button(_driver, By.XPath($"//button[@aria-label='{buttonName}']"), $"{buttonName} Button");
+            button.Click();
+        }
+
+        public void SwitchToTab(string tabName)
+        {
+            var tab = new Label(_driver, By.XPath($"//li[@aria-label='{tabName}']"), $"{tabName} Tab");
+            tab.Click();
         }
 
         public string GetFieldValue(string fieldName)

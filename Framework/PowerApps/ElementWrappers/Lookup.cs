@@ -57,7 +57,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 GetElement(Timeouts.EXTRA_SHORT).SendKeys(value.Trim());                
                 Logger.Debug($"value sent: {value}");
                 GetElement(Timeouts.EXTRA_SHORT).Click();
-                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.EXTRA_SHORT);
+                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.DEFAULT_WAIT);
                 Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
                 recordsList.GetElementAt(0).Click();
 
@@ -80,7 +80,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void RemoveRecordFromLookup()
         {           
-            if (recordOnLookup.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
+            if (recordOnLookup.IsDisplayed(Timeouts.WAIT_FOR_INTERVAL))
             {
                 recordXButton.Click();
             }            
@@ -88,9 +88,10 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void ClickRecordOnLookup()
         {
-            if (recordOnLookup.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
+            if (recordOnLookup.IsDisplayed(Timeouts.WAIT_FOR_INTERVAL))
             {
                 recordOnLookup.Click();
+                customWaits.WaitUntilRecordFormLoads();
             }
         }
 

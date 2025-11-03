@@ -1,5 +1,6 @@
 ﻿using Allure.Net.Commons;
 using Automation_Framework.Framework.PowerApps.Constants;
+using Automation_Framework.Framework.Utilities;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Country;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
@@ -18,9 +19,10 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SpacecraftForm? _spacecraftForm;
         private SpacecraftView? _spacecraftView;
         private SideMapForm? _sidemapForm;
-        private SpaceFlightForm _spaceFlightForm;
-        private LookupRecordsForm _recordsForm;
+        private SpaceFlightForm? _spaceFlightForm;
+        private LookupRecordsForm? _recordsForm;
         private EnginesSubgrid? _engineSubgrid;
+        private CountryForm? _countryForm;
         public EnginesSubgrid engineSubgrid => _engineSubgrid ??= new EnginesSubgrid(driver);
 
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
@@ -28,6 +30,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
         public SpaceFlightForm spaceFlightForm => _spaceFlightForm ??= new SpaceFlightForm(driver);
         public LookupRecordsForm recordsForm => _recordsForm ??= new LookupRecordsForm(driver);
+        public CountryForm countryForm => _countryForm ??= new CountryForm(driver);
 
         [Test]
         public void Test_TotalFlightHours_MoreThan100_UpdatesEngineStatus()

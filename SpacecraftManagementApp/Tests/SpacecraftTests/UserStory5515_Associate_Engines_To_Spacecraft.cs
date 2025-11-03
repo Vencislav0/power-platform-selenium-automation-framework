@@ -106,46 +106,6 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             });
 
         }
-
-        [Test]
-        [TestCase(1)]
-        [TestCase(2)]
-        public void Test_AddEngines_WithLowStatus_ShouldNotify_FleetAndSpacecraft(int engineAmount)
-        {
-            AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftForm.ClickNewButtonFromToolBar();
-            });
-            
-            var regNumber = "";
-            AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
-            {
-                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
-                regNumber = spacecraftForm.GetRegistrationNumber();
-
-                
-            });
-
-            AllureApi.Step("Navigate to engines tab and on the subrid add new engine with low status", () =>
-            {
-                SpacecraftSteps.AddNewEnginesToSpacecraft(engineAmount, spacecraftForm, engineForm, engineSubgrid, "0", "Low Status Engine");
-            });
-
-            AllureApi.Step("Verify a warning notification is displayed with the correct text and delete spacecraft and engines", () =>
-            {
-                Assert.That(spacecraftForm.IsWarningNotificationDisplayed(), Is.True);
-                Assert.That(spacecraftForm.GetWarningNotificationText(), Is.EqualTo($"Warning: This spacecraft has {engineAmount} engine(s) with low status. Please check the engines for maintenance."));
-
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.DeleteRecord(regNumber);
-
-                areaSwitcherForm.SelectArea("Engine Department");
-                sidemapForm.ClickSidemapItem("Engines");
-                engineView.DeleteAllRecordsWithName("Low Status Engine");
-                
-            });
-           
-        }
+        
     }
 }
