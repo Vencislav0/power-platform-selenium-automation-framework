@@ -7,7 +7,9 @@ using Automation_Framework.Framework.Logging;
 using Automation_Framework.Framework.PowerApps.ElementWrappers;
 using Automation_Framework.Framework.WebDriver;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Country;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms.SpaceFlight;
 using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -18,20 +20,21 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
     [AllureNUnit]
     [AllureSuite("Default Suite")]
     public class BaseTest
-    {       
+    {
         protected Random random = new Random();
         protected IWebDriver driver;
         protected BaseSubgrid subgrid;
+      
         [OneTimeSetUp]
         public void GlobalSetup()
         {                                   
-            driver = WebDriverFactory.GetChromeDriver();   
-            subgrid = new BaseSubgrid(driver, "Subgrid");
+            driver = WebDriverFactory.GetChromeDriver();               
         }
 
         [SetUp]
         public void Setup()
         {
+            subgrid = new BaseSubgrid(driver, "Subgrid");
             var testName = TestContext.CurrentContext.Test.Name;
             driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entitylist&etn=space_maintenance&viewid=b4d4d759-f4de-49cb-b88c-d0abb278bdf3&viewType=1039");                        
             Logger.SetLogFileForTest(testName);
@@ -83,18 +86,18 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
                       
             
         }
-       
-        public void AssertEqualWithRefresh<T>(Func<T> actualResult, T expectedResult, SpacecraftForm spacecraftForm, int maxRetries = 3, bool subgridRefresh = false)
+
+        public void AssertEqualWithRefresh<T>(Func<T> actualResult, T expectedResult, BaseForm form, int maxRetries = 3, bool subgridRefresh = false)
         {
             var retryCount = 0;
-            
+
             while (retryCount < maxRetries)
             {
 
                 var actual = actualResult();
 
                 if (Equals(actual, expectedResult))
-                {                    
+                {
                     return;
                 }
 
@@ -102,16 +105,16 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
                 if (retryCount < maxRetries)
                 {
                     Logger.Debug($"Attempt {retryCount + 1} failed, refreshing and retrying..");
-                    if(subgridRefresh == false)
+                    if (subgridRefresh == false)
                     {
-                        spacecraftForm.ClickRefreshButtonFromToolBar();
+                        form.ClickRefreshButtonFromToolBar();
                     }
                     else
                     {
                         subgrid.ClickRefreshButton();
                     }
 
-                        Thread.Sleep(500);
+                    Thread.Sleep(500);
                 }
             }
 
@@ -130,7 +133,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
 
                 retryCount++;
 
-                if(retryCount < maxRetries)
+                if (retryCount < maxRetries)
                 {
                     Logger.Debug($"Attempt {retryCount + 1} failed, refreshing and retrying..");
                     if (subgridRefresh == false)
@@ -149,7 +152,6 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             Assert.Fail($"Condition was not true after {maxRetries} retries with refreshes.");
 
         }
-        
-      
+
     }
 }

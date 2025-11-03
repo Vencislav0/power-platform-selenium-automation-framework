@@ -2,6 +2,7 @@
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Country;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms.SpaceFlight;
 using Automation_Framework.SpacecraftManagementApp.Steps;
 using OpenQA.Selenium.BiDi.Input;
 using System;
@@ -19,11 +20,17 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SpacecraftForm? _spacecraftForm;
         private SpacecraftView? _spacecraftView;
         private SideMapForm? _sidemapForm;
+        private SpaceFlightForm? _spaceFlightForm;
+        private LookupRecordsForm? _recordsForm;
+        private EnginesSubgrid? _engineSubgrid;
         private CountryForm? _countryForm;
+        public EnginesSubgrid engineSubgrid => _engineSubgrid ??= new EnginesSubgrid(driver);
 
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
         public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
+        public SpaceFlightForm spaceFlightForm => _spaceFlightForm ??= new SpaceFlightForm(driver);
+        public LookupRecordsForm recordsForm => _recordsForm ??= new LookupRecordsForm(driver);
         public CountryForm countryForm => _countryForm ??= new CountryForm(driver);
 
         [Test]

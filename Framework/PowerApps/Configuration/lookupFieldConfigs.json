@@ -65,6 +65,13 @@
     "searchButtonLocator": "//button[@aria-label='Search records for Landing Space Port, Lookup field']",
     "recordOnLookupLocator": "//div[contains(@data-id, 'landingspaceport') and @aria-label]",
     "recordsListLocator": "//li[contains(@data-id, 'landingspaceport') and @aria-selected]"
+  },
+
+  "incidentCategory": {
+    "xButtonLocator": "//button[contains(@aria-label, 'Delete') and contains(@data-id, 'incidentcategory')]",
+    "searchButtonLocator": "//button[@aria-label='Search records for Incident Category, Lookup field']",
+    "recordOnLookupLocator": "//div[contains(@data-id, 'incidentcategory') and @aria-label]",
+    "recordsListLocator": "//li[contains(@data-id, 'incidentcategory') and @aria-selected]"
   }
 
 

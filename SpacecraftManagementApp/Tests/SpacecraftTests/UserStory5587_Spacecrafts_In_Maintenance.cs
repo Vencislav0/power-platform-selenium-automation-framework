@@ -1,4 +1,5 @@
 ﻿using Allure.Net.Commons;
+using Automation_Framework.Framework.Utilities;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Country;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Fleet;
@@ -30,6 +31,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         public CountryForm countryForm => _countryForm ??= new CountryForm(driver);
         public FleetForm fleetForm => _fleetForm ??= new FleetForm(driver);
         public FleetView fleetView => _fleetView ??= new FleetView(driver);
+
         [Test]
         public void Test_Spacecraft_WhenCreatedMaintenance_StatusUpdates()
         {

@@ -18,4 +18,20 @@ namespace Automation_Framework.Framework.PowerApps.Constants
         Passenger,
         Other
     }
+
+    public enum MaintenanceTasksStatusChoices
+    {
+        Completed,
+        NotStarted,
+        InProgress
+
+    }
+
+    public enum FinalOutcomeChoices
+    {
+        
+        ReturnToService,
+        Decomission,
+        OtherReason
+    }
 }

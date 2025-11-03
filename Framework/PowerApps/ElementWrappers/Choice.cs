@@ -22,9 +22,9 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 Logger.Debug($"Selecting value: {value} on choice type field: {name}");
                 customWaits.WaitUntilVisible();
                 customWaits.WaitUntilEnabled();
-
+                Thread.Sleep(500);
                 GetElement().Click();
-
+                
                 var option = new Label(driver, By.XPath($"//div[text()='{value}']"), $"{value} Option From Choice Field: {name}");
                 option.Click();
             }
