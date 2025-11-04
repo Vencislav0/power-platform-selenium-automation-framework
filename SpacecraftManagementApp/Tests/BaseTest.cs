@@ -87,6 +87,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             
         }
 
+        //Power Platform
         public void AssertEqualWithRefresh<T>(Func<T> actualResult, T expectedResult, BaseForm form, int maxRetries = 3, bool subgridRefresh = false)
         {
             var retryCount = 0;

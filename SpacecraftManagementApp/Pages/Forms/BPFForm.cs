@@ -24,10 +24,13 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms
             stageButton.Click();
         }
 
-        public void ClickNextStageButton()
+        public void ClickNextStageButton(bool shouldWait = true)
         {
             ClickButton("Next Stage");
-            customWaits.WaitUntilRecordSaved();
+            if (shouldWait)
+            {
+                customWaits.WaitUntilRecordSaved();
+            }            
         }
 
         public void ClickBackButton()
