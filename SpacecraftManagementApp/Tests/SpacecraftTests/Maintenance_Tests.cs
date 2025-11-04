@@ -86,19 +86,61 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                 AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(), lv2CategoriesCount, maintenanceForm, 30, true);
             });
 
-            AllureApi.Step("Complete each maintenance task then complete the repair stage", () =>
+            AllureApi.Step("Try to complete repair stage without completing any task and verify validation message is displayed with correct text and close it.", () =>
             {
-                var tasksAmount = maintenanceForm.GetMaintenaceTasksAmount();
-
-                for(int i = 1;  i <= tasksAmount; i++)
-                {
-                    maintenanceForm.CompleteMaintenanceTask(i);
-                }
-
                 BPFForm.ClickStageButton("Repair");
-                BPFForm.ClickNextStageButton();
+                BPFForm.ClickNextStageButton(false);
+
+                Assert.That(maintenanceForm.IsIncompleteTasksErrorMessageDisplayed(), Is.True);
+                Assert.That(maintenanceForm.GetIncompleteTasksErrorMessageText(), Is.EqualTo("You cannot proceed to the next stage before all tasks are completed."));
+
+                maintenanceForm.ClickDialogPopupOKButton();
             });
 
+            var tasksAmount = maintenanceForm.GetMaintenaceTasksAmount();
+            AllureApi.Step("If more than 1 maintenance tasks, complete only 1 and verify validation message is displayed with correct text and close it", () =>
+            {
+                if (tasksAmount > 1)
+                {
+                    maintenanceForm.CompleteMaintenanceTask(1);
+                    BPFForm.ClickStageButton("Repair");
+                    BPFForm.ClickNextStageButton(false);
+
+                    Assert.That(maintenanceForm.IsIncompleteTasksErrorMessageDisplayed(), Is.True);
+                    Assert.That(maintenanceForm.GetIncompleteTasksErrorMessageText(), Is.EqualTo("You cannot proceed to the next stage before all tasks are completed."));
+
+                    maintenanceForm.ClickDialogPopupOKButton();
+                }
+            });
+
+            AllureApi.Step("Complete the remaining maintenance tasks and verify the validation message is not present", () =>
+            {
+                if (tasksAmount > 1)
+                {
+                    for (int i = 2; i <= tasksAmount; i++)
+                    {
+                        maintenanceForm.CompleteMaintenanceTask(i);
+                    }
+
+                    BPFForm.ClickStageButton("Repair");
+                    BPFForm.ClickNextStageButton(false);
+
+                    Assert.That(maintenanceForm.IsIncompleteTasksErrorMessageDisplayed(), Is.False);
+                }
+                else
+                {
+                    for (int i = 1; i <= tasksAmount; i++)
+                    {
+                        maintenanceForm.CompleteMaintenanceTask(i);
+                    }
+
+                    BPFForm.ClickStageButton("Repair");
+                    BPFForm.ClickNextStageButton();
+
+                    Assert.That(maintenanceForm.IsIncompleteTasksErrorMessageDisplayed(), Is.False);
+                }
+            });
+           
             AllureApi.Step("Complete the Close stage by choosing final outcome Return to Service and actual completion date", () =>
             {
                 maintenanceForm.SelectActualCompletionDate(DateTime.Now.Date.ToString("MM/dd/yyyy"));
@@ -118,7 +160,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                 maintenanceView.DeleteAllRecords();
                 
             });
-        }
+        }      
         
     }
 }

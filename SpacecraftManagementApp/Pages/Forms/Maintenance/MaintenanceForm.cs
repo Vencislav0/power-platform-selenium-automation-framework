@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Automation_Framework.Framework.ElementWrappers;
+using Automation_Framework.Framework.Constants;
+using Automation_Framework.Framework.Logging;
 
 namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Maintenance
 {
@@ -17,6 +20,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Maintenance
         protected Date actualCompletionDate;
         protected Choice finalOutcomeChoice;
         protected MaintenanceTasksSubgrid maintenanceTasksSubgrid;
+        protected Label incompleteTasksErrorMessage;
+        protected Button dialogPopupOkButton;
         protected MaintenanceTaskForm maintenanceTaskForm;
         protected IncidentCategorySubgrid incidentCategorySubgrid;
         public MaintenanceForm(IWebDriver driver) : base(driver, By.XPath("//div[@data-id='grid-container']"), "Maintenance Form") 
@@ -28,6 +33,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Maintenance
             finalOutcomeChoice = new Choice(driver, By.XPath("//button[@aria-label='Final Outcome']"), "Final Outcome Choice");
             maintenanceTasksSubgrid = new MaintenanceTasksSubgrid(driver);
             maintenanceTaskForm = new MaintenanceTaskForm(driver);
+            dialogPopupOkButton = new Button(driver, By.XPath("(//div[contains(@id, 'modalDialogContentContainer')])[1]//button[@data-id='okButton']"), "Dialog Popup OK Button");
+            incompleteTasksErrorMessage = new Label(driver, By.XPath("(//div[contains(@id, 'modalDialogContentContainer')])[1]//span[@data-id='dialogMessageText']"), "Incomplete Tasks Error Message");
             incidentCategorySubgrid = new IncidentCategorySubgrid(driver);
         }
 
@@ -102,6 +109,34 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Maintenance
 
             maintenanceTaskForm.SelectStatus(MaintenanceTasksStatusChoices.Completed);
             maintenanceTaskForm.ClickSaveAndCloseButtonFromToolBar();
+        }
+
+        public void ClickDialogPopupOKButton()
+        {
+            while (true)
+            {
+                if (dialogPopupOkButton.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
+                {
+                    Logger.Debug("No more popups detected.");
+                    dialogPopupOkButton.Click();
+                    Thread.Sleep(500);
+                }
+                else
+                {
+                    Logger.Debug("No more popups detected.");
+                    break;
+                }               
+            }           
+        }
+
+        public bool IsIncompleteTasksErrorMessageDisplayed()
+        {
+            return incompleteTasksErrorMessage.IsDisplayed(Timeouts.DEFAULT_INTERVAL);
+        }
+
+        public string GetIncompleteTasksErrorMessageText()
+        {
+            return incompleteTasksErrorMessage.GetText();
         }
        
     }
