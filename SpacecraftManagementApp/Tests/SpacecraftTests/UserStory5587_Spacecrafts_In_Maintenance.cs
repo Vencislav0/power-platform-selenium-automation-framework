@@ -22,13 +22,12 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private CountryForm? _countryForm;
         private MaintenanceView? _maintenanceView;
         private FleetForm? _fleetForm;
-        private FleetView _fleetView;
+        private FleetView? _fleetView;
 
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public MaintenanceView maintenanceView => _maintenanceView ??= new MaintenanceView(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
-        public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
-        public CountryForm countryForm => _countryForm ??= new CountryForm(driver);
+        public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);        
         public FleetForm fleetForm => _fleetForm ??= new FleetForm(driver);
         public FleetView fleetView => _fleetView ??= new FleetView(driver);
 

@@ -11,12 +11,10 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 {
     public class UserStory5537_Type_Specific_Fields_Tests : BaseTest
     {
-        private SpacecraftForm? _spacecraftForm;
-        private SpacecraftView? _spacecraftView;
+        private SpacecraftForm? _spacecraftForm;        
         private SideMapForm? _sidemapForm;
 
-        public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
-        public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
+        public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);        
         public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
 
         [Test]

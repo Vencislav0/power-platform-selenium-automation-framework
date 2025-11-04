@@ -83,6 +83,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
                 {
                     lookupRecordsForm.addRecord(1);
                 }
+                Thread.Sleep(500);
                 lookupRecordsForm.ClickAddButton();
             });
         }
