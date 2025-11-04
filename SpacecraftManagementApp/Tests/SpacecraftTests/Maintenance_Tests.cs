@@ -16,9 +16,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SpacecraftForm? _spacecraftForm;
         private SpacecraftView? _spacecraftView;
         private SideMapForm? _sidemapForm;
-        private MaintenanceForm? _maintenanceForm;
-        private MaintenanceTaskForm? _maintenanceTaskForm;
-        private MaintenanceTasksSubgrid? _maintenanceTaskSubgrid;
+        private MaintenanceForm? _maintenanceForm;        
         private BPFForm? _bpfForm;
         private MaintenanceView? _maintenanceView;
 
@@ -28,9 +26,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         public MaintenanceForm maintenanceForm => _maintenanceForm ??= new MaintenanceForm(driver);
         public BPFForm BPFForm => _bpfForm ??= new BPFForm(driver);
         public MaintenanceView maintenanceView => _maintenanceView ??= new MaintenanceView(driver);
-        public MaintenanceTaskForm maintenanceTaskForm => _maintenanceTaskForm ??= new MaintenanceTaskForm(driver);
-        public MaintenanceTasksSubgrid maintenanceTasksSubgrid => _maintenanceTaskSubgrid ??= new MaintenanceTasksSubgrid(driver);
-
+        
         [Test]
         public void Test_PerformMaintenance_OnSpacecraft_ShouldCompleteSuccessfully()
         {

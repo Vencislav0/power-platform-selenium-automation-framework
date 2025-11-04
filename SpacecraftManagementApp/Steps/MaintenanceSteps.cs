@@ -17,7 +17,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
         private MaintenanceTasksSubgrid? _maintenanceTaskSubgrid;
 
         public MaintenanceTasksSubgrid maintenanceTasksSubgrid => _maintenanceTaskSubgrid ??= new MaintenanceTasksSubgrid(driver);
-        public void CreateMaintenanceWithCreateMaintenanceButton(SpacecraftForm spacecraftForm, MaintenanceForm maintenanceForm, BPFForm BPFForm)
+        public void CreateMaintenanceWithCreateMaintenanceButton(SpacecraftForm spacecraftForm, MaintenanceForm maintenanceForm, BPFForm BPFForm, string finalOutcome)
         {
             AllureApi.Step("Click the Create Maintenance button", () =>
             {
@@ -82,10 +82,11 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
                 BPFForm.ClickNextStageButton();
             });
 
-            AllureApi.Step("Complete the Close stage by choosing final outcome Return to Service and actual completion date", () =>
+
+            AllureApi.Step($"Complete the Close stage by choosing final outcome {finalOutcome} and actual completion date", () =>
             {
                 maintenanceForm.SelectActualCompletionDate(DateTime.Now.Date.ToString("MM/dd/yyyy"));
-                maintenanceForm.SelectFinalOutcome("Return to Service");
+                maintenanceForm.SelectFinalOutcome(finalOutcome);
                 BPFForm.ClickFinishButton();
             });
         }

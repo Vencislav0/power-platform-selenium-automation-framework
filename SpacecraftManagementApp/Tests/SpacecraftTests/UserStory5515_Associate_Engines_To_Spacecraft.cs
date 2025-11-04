@@ -19,23 +19,13 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SideMapForm? _sidemapForm;
         private EnginesSubgrid? _engineSubgrid;
         private LookupRecordsForm? _lookupRecordsForm;
-        private EngineForm? _engineForm;
-        private FleetView? _fleetView;
-        private FleetForm? _fleetForm;
-        private AreaSwitcherForm? _areaSwitcherForm;
-        private EngineView? _engineView;
-
+       
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
         public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
         public EnginesSubgrid engineSubgrid => _engineSubgrid ??= new EnginesSubgrid(driver);
         public LookupRecordsForm lookupRecordsForm => _lookupRecordsForm ??= new LookupRecordsForm(driver);
-        public EngineForm engineForm => _engineForm ??= new EngineForm(driver);
-        public FleetView fleetView => _fleetView ??= new FleetView(driver);
-        public FleetForm fleetForm => _fleetForm ??= new FleetForm(driver);
-        public AreaSwitcherForm areaSwitcherForm => _areaSwitcherForm ??= new AreaSwitcherForm(driver);
-        public EngineView engineView => _engineView ??= new EngineView(driver);
-
+        
         [Test]
         public void Test_AddEnginesToSpacecraft_SameAmountAsModelEngineCount_AddsEnginesSuccessfuly()
         {

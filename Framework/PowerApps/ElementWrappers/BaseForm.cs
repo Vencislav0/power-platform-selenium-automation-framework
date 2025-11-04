@@ -47,7 +47,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             titleHeader = new Label(_driver, By.XPath("//h1[@data-id='header_title']"), "Form Title");            
             refreshButton = new Button(_driver, By.XPath("//button[@aria-label='Refresh']"), "Refresh Button");
             warningNotification = new Label(driver, By.XPath("//span[@data-id='warningNotification']"), "Warning Notification on Spacecraft Form");
-            wait = new WebDriverWait(_driver, Timeouts.DEFAULT_WAIT);
+            wait = new WebDriverWait(_driver, Timeouts.API);
             random = new Random();
 
         }

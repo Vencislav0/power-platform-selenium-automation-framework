@@ -17,8 +17,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SpacecraftForm? _spacecraftForm;
         private SpacecraftView? _spacecraftView;
         private SideMapForm? _sidemapForm;
-        private EnginesSubgrid? _engineSubgrid;
-        private LookupRecordsForm? _lookupRecordsForm;
+        private EnginesSubgrid? _engineSubgrid;       
         private EngineForm? _engineForm;        
         private AreaSwitcherForm? _areaSwitcherForm;
         private EngineView? _engineView;
@@ -26,8 +25,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
         public SideMapForm sidemapForm => _sidemapForm ??= new SideMapForm(driver);
-        public EnginesSubgrid engineSubgrid => _engineSubgrid ??= new EnginesSubgrid(driver);
-        public LookupRecordsForm lookupRecordsForm => _lookupRecordsForm ??= new LookupRecordsForm(driver);
+        public EnginesSubgrid engineSubgrid => _engineSubgrid ??= new EnginesSubgrid(driver);        
         public EngineForm engineForm => _engineForm ??= new EngineForm(driver);                
         public AreaSwitcherForm areaSwitcherForm => _areaSwitcherForm ??= new AreaSwitcherForm(driver);
         public EngineView engineView => _engineView ??= new EngineView(driver);
