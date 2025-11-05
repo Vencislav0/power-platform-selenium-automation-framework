@@ -88,14 +88,17 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             var allCheckboxes = new ElementsCollection(_driver, By.XPath($"{_recordLocator}[.//label[@aria-label='{name}']]//div[contains(@class, 'ms-Checkbox is')] | {_recordLocator}[.//a[@aria-label='{name}']]//div[contains(@class, 'ms-Checkbox is')]"), $"{name} Checkboxes");
 
-            foreach (var checkbox in allCheckboxes.GetElements())
+            if(allCheckboxes.Count() > 0)
             {
-                if (checkbox.GetAttribute("class").Contains("enabled"))
+                foreach (var checkbox in allCheckboxes.GetElements())
                 {
-                    checkbox.Click();
+                    if (checkbox.GetAttribute("class").Contains("enabled"))
+                    {
+                        checkbox.Click();
+                    }
                 }
-            }
-            PerformDelete();
+                PerformDelete();
+            }            
         }
         public void DeleteAllRecords()
         {

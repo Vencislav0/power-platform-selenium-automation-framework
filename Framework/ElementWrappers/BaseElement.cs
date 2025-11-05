@@ -22,7 +22,7 @@ public class BaseElement
     protected WebDriverWait wait;
     protected CustomWaits customWaits;
     protected Actions actions;
-    protected TimeSpan timeout = Timeouts.API;
+    protected TimeSpan timeout = Timeouts.MEDIUM;
     public BaseElement(IWebDriver driver, By locator, string name) 
     {
         this.locator = locator;
