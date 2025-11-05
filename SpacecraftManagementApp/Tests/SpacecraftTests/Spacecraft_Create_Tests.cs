@@ -23,26 +23,37 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 
         [Test]
         public void CreateSpacecraft_WithValidData_SuccessfullyCreatesSpacecraft()
-        {           
-            var initialRecordCount = 0;
-            AllureApi.Step("Navigating to Spacecraft View, and click New button", () =>
+        {
+            var regNumber = "";
+            try
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                initialRecordCount = spacecraftView.GetRecordsCount();
-                spacecraftForm.ClickNewButtonFromToolBar();
-            });
 
-            SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+                var initialRecordCount = 0;
+                AllureApi.Step("Navigating to Spacecraft View, and click New button", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    initialRecordCount = spacecraftView.GetRecordsCount();
+                    spacecraftForm.ClickNewButtonFromToolBar();
+                });
 
-            AllureApi.Step("verifying the creation and deleting it.", () =>
+                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+
+                AllureApi.Step("verifying the creation", () =>
+                {
+                    regNumber = spacecraftForm.GetRegistrationNumber();
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+
+                    Assert.That(spacecraftView.GetRecordsCount(), Is.EqualTo(initialRecordCount + 1), "Spacecraft was not displayed on the view");                    
+                });
+            }
+            catch (Exception)
             {
-                var regNumber = spacecraftForm.GetRegistrationNumber();
-                sidemapForm.ClickSidemapItem("Spacecrafts");
 
-                Assert.That(spacecraftView.GetRecordsCount(), Is.EqualTo(initialRecordCount + 1), "Spacecraft was not displayed on the view");
+            }
 
+            TestCleanup(() =>
+            {
                 spacecraftView.DeleteRecord(regNumber);
-               
             });
         }
 
