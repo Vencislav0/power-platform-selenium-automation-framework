@@ -28,7 +28,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             _driver = driver;
             _locator = new Label(_driver, By.XPath(_subgridLocator), "Subgrid Form");
             newRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'Add New')]"), "New Record Button");
-            overflowButton = new Button(_driver, By.XPath("//button[contains(@id, 'OverflowButton') and contains(@id, 'Subgrid')]"), "Overflow Button: Subgrid");
+            overflowButton = new Button(_driver, By.XPath("//button[contains(@id, 'OverflowButton') and contains(translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'subgrid')]"), "Overflow Button: Subgrid");
             addExistingRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'exists')]"), "Existing Record Button");
             refreshButton = new Button(_driver, By.XPath("//button[contains(@data-id, 'RefreshButton') and contains(@data-id, 'SubGrid')]"), "Refresh Subgrid Button");
             _name = name;

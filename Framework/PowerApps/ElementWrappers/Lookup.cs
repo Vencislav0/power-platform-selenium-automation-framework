@@ -70,11 +70,28 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 recordsList.GetElementAt(0).Click();
 
             }
+            catch (StaleElementReferenceException)
+            {
+                Logger.Debug("Encountered stale element. Retrying..");
+                Logger.Debug($"Sending value to Lookup: {name}");
+                RemoveRecordFromLookup();
+                customWaits.WaitUntilVisible();
+                customWaits.WaitUntilEnabled();
+                GetElement(Timeouts.EXTRA_SHORT).Click();
+                //Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
+                GetElement(Timeouts.EXTRA_SHORT).SendKeys(value.Trim());
+                Logger.Debug($"value sent: {value}");
+                GetElement(Timeouts.EXTRA_SHORT).Click();
+                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.DEFAULT_WAIT);
+                Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
+                recordsList.GetElementAt(0).Click();
+            }
             catch (Exception)
             {
                 Logger.Error($"Failed sending value to Lookup: {name}");
                 throw;
             }
+            
             
         }
 
