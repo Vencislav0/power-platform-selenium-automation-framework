@@ -29,35 +29,47 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         [Test]
         public void Test_AddEnginesToSpacecraft_SameAmountAsModelEngineCount_AddsEnginesSuccessfuly()
         {
-            AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftForm.ClickNewButtonFromToolBar();
-            });
-
-            var engineCount = 0;
             var regNumber = "";
-            AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+            try
             {
-                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
-                regNumber = spacecraftForm.GetRegistrationNumber();
-                
-                engineCount = SpacecraftSteps.GetEngineCount(spacecraftForm);
-            });
+                AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftForm.ClickNewButtonFromToolBar();
+                });
 
-            AllureApi.Step("Navigate to engines tab and on the subrid add existing engines with the amount of the military model engine count", () =>
-            {            
-                SpacecraftSteps.AddEnginesToSpacecraft(engineCount, spacecraftForm, engineSubgrid, lookupRecordsForm);                            
-            });
+                var engineCount = 0;
+                AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+                {
+                    SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+                    regNumber = spacecraftForm.GetRegistrationNumber();
 
-            AllureApi.Step("Verify engines were added successfuly to the subgrid and it contains the same number of engines as the model engine count then delete the spacecraft", () =>
+                    engineCount = SpacecraftSteps.GetEngineCount(spacecraftForm);
+                });
+
+                AllureApi.Step("Navigate to engines tab and on the subrid add existing engines with the amount of the military model engine count", () =>
+                {
+                    SpacecraftSteps.AddEnginesToSpacecraft(engineCount, spacecraftForm, engineSubgrid, lookupRecordsForm);
+                });
+
+                AllureApi.Step("Verify engines were added successfuly to the subgrid and it contains the same number of engines as the model engine count", () =>
+                {
+                    Assert.That(engineSubgrid.GetRecordsCount(), Is.GreaterThan(0));
+                    Assert.That(engineSubgrid.GetRecordsCount(), Is.EqualTo(engineCount));                   
+                });
+            }
+            catch (Exception)
             {
-                Assert.That(engineSubgrid.GetRecordsCount(), Is.GreaterThan(0));
-                Assert.That(engineSubgrid.GetRecordsCount(), Is.EqualTo(engineCount));
 
+            }
+
+            TestCleanup(() =>
+            {
                 sidemapForm.ClickSidemapItem("Spacecrafts");
                 spacecraftView.DeleteRecord(regNumber);
             });
+
+
 
         }
 

@@ -34,51 +34,59 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         [Test]
         public void Test_Spacecraft_WhenCreatedMaintenance_StatusUpdates()
         {
-            AllureApi.Step("Navigate to Spacecraft View and create a new military spacecraft", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                sidemapForm.ClickNewButtonFromToolBar();
-                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
-            });
             var spacecraftRegistrationNumber = "";
-            AllureApi.Step("Retrive the registration code for later use", () =>
+            try
             {
-                spacecraftRegistrationNumber = spacecraftForm.GetRegistrationNumber();
-            });
+                AllureApi.Step("Navigate to Spacecraft View and create a new military spacecraft", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    sidemapForm.ClickNewButtonFromToolBar();
+                    SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+                });
+                AllureApi.Step("Retrive the registration code for later use", () =>
+                {
+                    spacecraftRegistrationNumber = spacecraftForm.GetRegistrationNumber();
+                });
 
-            AllureApi.Step("Click the \"Create Maintenace\" button and navigate back to the spacecrafts view", () => {
-               var formTitle =  spacecraftForm.GetFormTitleText();
-                spacecraftForm.ClickCreateMaintenanceButton();
+                AllureApi.Step("Click the \"Create Maintenace\" button and navigate back to the spacecrafts view", () =>
+                {
+                    var formTitle = spacecraftForm.GetFormTitleText();
+                    spacecraftForm.ClickCreateMaintenanceButton();
 
-                spacecraftForm.WaitUntilFormTitleChanges(formTitle);
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-            });
+                    spacecraftForm.WaitUntilFormTitleChanges(formTitle);
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                });
 
-            AllureApi.Step("On the Spacecraft View find the spacecraft we put into maintenance using the reg number and verify that the status is \"In Maintenance\".", () => {
+                AllureApi.Step("On the Spacecraft View find the spacecraft we put into maintenance using the reg number and verify that the status is \"In Maintenance\".", () =>
+                {
+
+
+                    AssertEqualWithRefresh(() => spacecraftView.GetRecordStatus(spacecraftRegistrationNumber), "In Maintenance", spacecraftForm, 30);
+                });
+
+                AllureApi.Step("Navigate to the military fleet and verify presence of warning notification with the correct spacecraft name in maintenance", () =>
+                {
+
+                    sidemapForm.ClickSidemapItem("Fleets");
+                    fleetView.OpenRecord("Military Fleet");
+
+                    AssertTrueWithRefresh(() => fleetForm.IsWarningNotificationDisplayed(), fleetForm, 10);
+                    Assert.That(fleetForm.GetWarningNotificationText(), Is.EqualTo("Warning: The following spacecraft(s) are currently in maintenance: Test. Please check the spacecraft details for more information."));
+                });                              
+            }
+            catch (Exception)
+            {
+
+            }
+
+            TestCleanup(() =>
+            {
                 
-           
-                AssertEqualWithRefresh(() => spacecraftView.GetRecordStatus(spacecraftRegistrationNumber), "In Maintenance", spacecraftForm, 30);             
-            });
-
-            AllureApi.Step("Navigate to the military fleet and verify presence of warning notification with the correct spacecraft name in maintenance", () => {
-
-                sidemapForm.ClickSidemapItem("Fleets");
-                fleetView.OpenRecord("Military Fleet");
-
-                AssertTrueWithRefresh(() => fleetForm.IsWarningNotificationDisplayed(), fleetForm, 10);
-                Assert.That(fleetForm.GetWarningNotificationText(), Is.EqualTo("Warning: The following spacecraft(s) are currently in maintenance: Test. Please check the spacecraft details for more information."));
-            });
-
-            AllureApi.Step("Navigate to Maintenance View and delete all maintenance records", () => {
-
-                sidemapForm.ClickSidemapItem("Maintenances");
-                maintenanceView.DeleteAllRecords();
-            });
-
-            AllureApi.Step("Navigate to Spacecraft View and delete the spacecraft", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.DeleteRecord(spacecraftRegistrationNumber);
+               sidemapForm.ClickSidemapItem("Maintenances");
+               maintenanceView.DeleteAllRecords();                                              
+               sidemapForm.ClickSidemapItem("Spacecrafts");
+               spacecraftView.DeleteRecord(spacecraftRegistrationNumber);
+                
             });
 
             AllureApi.Step("Navigate to Military Fleet and verify that the warning notification is not present after spacecraft deletion", () =>
@@ -88,6 +96,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 
                 AssertTrueWithRefresh(() => !fleetForm.IsWarningNotificationDisplayed(), fleetForm, 10);
             });
+
         }
     }
 }

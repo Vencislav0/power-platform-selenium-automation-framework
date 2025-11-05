@@ -24,11 +24,11 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
         protected Random random = new Random();
         protected IWebDriver driver;
         protected BaseSubgrid subgrid;
-      
+
         [OneTimeSetUp]
         public void GlobalSetup()
-        {                                   
-            driver = WebDriverFactory.GetChromeDriver();               
+        {
+            driver = WebDriverFactory.GetChromeDriver();
         }
 
         [SetUp]
@@ -36,7 +36,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
         {
             subgrid = new BaseSubgrid(driver, "Subgrid");
             var testName = TestContext.CurrentContext.Test.Name;
-            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entitylist&etn=space_maintenance&viewid=b4d4d759-f4de-49cb-b88c-d0abb278bdf3&viewType=1039");                        
+            driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entitylist&etn=space_maintenance&viewid=b4d4d759-f4de-49cb-b88c-d0abb278bdf3&viewType=1039");
             Logger.SetLogFileForTest(testName);
         }
 
@@ -62,17 +62,17 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
         }
 
         [OneTimeTearDown]
-        public void GlobalTearDown() 
+        public void GlobalTearDown()
         {
             driver.Dispose();
             LogManager.Shutdown();
         }
 
-        
+
         public void LoginPowerApps(string username, string password)
         {
             var nextButton = new Button(driver, By.Id("idSIButton9"), "Next Button");
-            
+
             var emailField = new Textbox(driver, By.Id("i0116"), "Email Field");
 
             if (!emailField.IsDisplayed(Timeouts.EXTRA_SHORT))
@@ -83,8 +83,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             nextButton.Click();
             Thread.Sleep(2000);
             nextButton.Click();
-                      
-            
+
+
         }
 
         //Power Platform
@@ -154,5 +154,17 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
 
         }
 
+        public void TestCleanup(Action cleanup)
+        {
+            AllureApi.Step("Performing cleanup of test data.", () =>
+            {
+                try 
+                { 
+                    driver.Navigate().Refresh();
+                    cleanup(); 
+                }
+                catch (Exception ex) { Logger.Error($"Cleanup failed: {ex}"); }
+            });            
+        }
     }
 }

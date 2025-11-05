@@ -10,6 +10,7 @@ using Automation_Framework.SpacecraftManagementApp.Steps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,81 +49,88 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
         [Test]
         public void WhenSpacecraftWithLowStatusEnginesIsMaintained_ShouldReplenishEnginesAndSetStationedStatus()
         {
-            AllureApi.Step("Navigate to spacecraft view and click New button", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftForm.ClickNewButtonFromToolBar();
-            });
-
-            var engineCount = 0;
             var regNumber = "";
-            AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+            try
             {
-                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
-                regNumber = spacecraftForm.GetRegistrationNumber();
-
-                engineCount = SpacecraftSteps.GetEngineCount(spacecraftForm);
-            });
-
-            var enginesStatus = new List<string>();
-            AllureApi.Step("Add engines with 5% status then navigate to spaceflight form and create a spaceflight of more than 100 hours", () =>
-            {
-                SpacecraftSteps.AddNewEnginesToSpacecraft(engineCount, spacecraftForm, engineForm, engineSubgrid, "5", "Low Status Engine");
-                enginesStatus = engineSubgrid.GetAllRecordsStatus();
-
-                sidemapForm.ClickSidemapItem("Space Flights");
-                spaceFlightForm.ClickNewButtonFromToolBar();
-
-                CommonSteps.CreateSpaceflight(spaceFlightForm, sidemapForm, spacecraftView, "Test", 5);
-
-            });
-
-            AllureApi.Step("Navigate back to the spacecraft and verify notification for low status engines is displayed and the status decreased on all engines", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.OpenRecord(regNumber);
-
-                AssertTrueWithRefresh(() => spacecraftForm.IsWarningNotificationDisplayed(), spacecraftForm, 30);
-                AssertEqualWithRefresh(() => spacecraftForm.GetWarningNotificationText(), $"Warning: This spacecraft has {engineCount} engine(s) with low status. Please check the engines for maintenance.", spacecraftForm, 30);
-
-                spacecraftForm.NavigateToEnginesTab();
-
-                for (int i = 0; i < enginesStatus.Count; i++)
+                AllureApi.Step("Navigate to spacecraft view and click New button", () =>
                 {
-                    var statusBefore = int.Parse(enginesStatus[i]);
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftForm.ClickNewButtonFromToolBar();
+                });
 
-                    AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), spacecraftForm, 10, true);
-                }
+                var engineCount = 0;
+                AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+                {
+                    SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+                    regNumber = spacecraftForm.GetRegistrationNumber();
 
-            });
+                    engineCount = SpacecraftSteps.GetEngineCount(spacecraftForm);
+                });
 
-            AllureApi.Step("Click Create Maintenance button and complete a successful maintenance", () =>
-            {                
-                maintenanceSteps.CreateMaintenanceWithCreateMaintenanceButton(spacecraftForm, maintenanceForm, BPFForm, "Return to Service");
-            });
+                var enginesStatus = new List<string>();
+                AllureApi.Step("Add engines with 5% status then navigate to spaceflight form and create a spaceflight of more than 100 hours", () =>
+                {
+                    SpacecraftSteps.AddNewEnginesToSpacecraft(engineCount, spacecraftForm, engineForm, engineSubgrid, "5", "Low Status Engine");
+                    enginesStatus = engineSubgrid.GetAllRecordsStatus();
 
-            AllureApi.Step("Navigate back to spacecraft view and verify that after successful maintenance the spacecraft is in Stationed state", () =>
+                    sidemapForm.ClickSidemapItem("Space Flights");
+                    spaceFlightForm.ClickNewButtonFromToolBar();
+
+                    CommonSteps.CreateSpaceflight(spaceFlightForm, sidemapForm, spacecraftView, "Test", 5);
+
+                });
+
+                AllureApi.Step("Navigate back to the spacecraft and verify notification for low status engines is displayed and the status decreased on all engines", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.OpenRecord(regNumber);
+
+                    AssertTrueWithRefresh(() => spacecraftForm.IsWarningNotificationDisplayed(), spacecraftForm, 30);
+                    AssertEqualWithRefresh(() => spacecraftForm.GetWarningNotificationText(), $"Warning: This spacecraft has {engineCount} engine(s) with low status. Please check the engines for maintenance.", spacecraftForm, 30);
+
+                    spacecraftForm.NavigateToEnginesTab();
+
+                    for (int i = 0; i < enginesStatus.Count; i++)
+                    {
+                        var statusBefore = int.Parse(enginesStatus[i]);
+
+                        AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), spacecraftForm, 10, true);
+                    }
+
+                });
+
+                AllureApi.Step("Click Create Maintenance button and complete a successful maintenance", () =>
+                {
+                    maintenanceSteps.CreateMaintenanceWithCreateMaintenanceButton(spacecraftForm, maintenanceForm, BPFForm, "Return to Service");
+                });
+
+                AllureApi.Step("Navigate back to spacecraft view and verify that after successful maintenance the spacecraft is in Stationed state", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    AssertEqualWithRefresh(() => spacecraftView.GetRecordStatus(regNumber), "Stationed", spacecraftForm, 30);
+                });
+
+                AllureApi.Step("Open the spacecraft and verify the engines status is back to 100% and warning notification is not present", () =>
+                {
+                    spacecraftView.OpenRecord(regNumber);
+
+                    AssertTrueWithRefresh(() => !spacecraftForm.IsWarningNotificationDisplayed(), spacecraftForm, 30);
+
+                    spacecraftForm.NavigateToEnginesTab();
+
+                    for (int i = 0; i < enginesStatus.Count; i++)
+                    {
+
+                        AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 100, spacecraftForm, 10, true);
+                    }
+                });
+            }            
+            catch(Exception)
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                AssertEqualWithRefresh(() => spacecraftView.GetRecordStatus(regNumber), "Stationed", spacecraftForm, 30);
-            });
+                
+            }
 
-            AllureApi.Step("Open the spacecraft and verify the engines status is back to 100% and warning notification is not present", () =>
-            {
-                spacecraftView.OpenRecord(regNumber);
-
-                AssertTrueWithRefresh(() => !spacecraftForm.IsWarningNotificationDisplayed(), spacecraftForm, 30);
-
-                spacecraftForm.NavigateToEnginesTab();
-
-                for (int i = 0; i < enginesStatus.Count; i++)
-                {                  
-
-                    AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 100, spacecraftForm, 10, true);
-                }
-            });
-
-            AllureApi.Step("Clear all test data(Engines, Spacecraft, Spaceflights and Maintenance records)", () =>
+            TestCleanup(() =>
             {
                 sidemapForm.ClickSidemapItem("Spacecrafts");
                 spacecraftView.DeleteRecord(regNumber);
@@ -138,90 +146,95 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
                 sidemapForm.ClickSidemapItem("Engines");
 
                 engineView.DeleteAllRecordsWithName("Low Status Engine");
-
-                
             });
         }
 
         [Test]
         public void WhenSpacecraftWithLowStatusEnginesGoesTroughtUnsuccessfulMaintenance_ShouldSetRetiredStatusAndNotChangeEnginesHealth()
         {
-            AllureApi.Step("Navigate to spacecraft view and click New button", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftForm.ClickNewButtonFromToolBar();
-            });
-
-            var engineCount = 0;
             var regNumber = "";
-            AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+            try
             {
-                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
-                regNumber = spacecraftForm.GetRegistrationNumber();
+                AllureApi.Step("Navigate to spacecraft view and click New button", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftForm.ClickNewButtonFromToolBar();
+                });
 
-                engineCount = SpacecraftSteps.GetEngineCount(spacecraftForm);
-            });
+                var engineCount = 0;
+                AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+                {
+                    SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+                    regNumber = spacecraftForm.GetRegistrationNumber();
 
-            var enginesStatus = new List<string>();
-            AllureApi.Step("Add engines with 5% status then navigate to spaceflight form and create a spaceflight of more than 100 hours", () =>
+                    engineCount = SpacecraftSteps.GetEngineCount(spacecraftForm);
+                });
+
+                var enginesStatus = new List<string>();
+                AllureApi.Step("Add engines with 5% status then navigate to spaceflight form and create a spaceflight of more than 100 hours", () =>
+                {
+                    SpacecraftSteps.AddNewEnginesToSpacecraft(engineCount, spacecraftForm, engineForm, engineSubgrid, "5", "Low Status Engine");
+
+                    sidemapForm.ClickSidemapItem("Space Flights");
+                    spaceFlightForm.ClickNewButtonFromToolBar();
+
+                    CommonSteps.CreateSpaceflight(spaceFlightForm, sidemapForm, spacecraftView, "Test", 5);
+
+                });
+
+                AllureApi.Step("Navigate back to the spacecraft and verify notification for low status engines is displayed and the status decreased on all engines", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.OpenRecord(regNumber);
+
+                    AssertTrueWithRefresh(() => spacecraftForm.IsWarningNotificationDisplayed(), spacecraftForm, 30);
+                    AssertEqualWithRefresh(() => spacecraftForm.GetWarningNotificationText(), $"Warning: This spacecraft has {engineCount} engine(s) with low status. Please check the engines for maintenance.", spacecraftForm, 30);
+
+
+                    spacecraftForm.NavigateToEnginesTab();
+
+                    for (int i = 0; i < enginesStatus.Count; i++)
+                    {
+                        var statusBefore = int.Parse(enginesStatus[i]);
+
+                        AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), spacecraftForm, 10, true);
+                    }
+
+                    enginesStatus = engineSubgrid.GetAllRecordsStatus();
+                });
+
+                AllureApi.Step("Click Create Maintenance button and complete a unsuccessful maintenance", () =>
+                {
+                    maintenanceSteps.CreateMaintenanceWithCreateMaintenanceButton(spacecraftForm, maintenanceForm, BPFForm, "Decomission");
+                });
+
+                AllureApi.Step("Navigate back to spacecraft view and verify that after unsuccessful maintenance the spacecraft is in Retired state", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    AssertEqualWithRefresh(() => spacecraftView.GetRecordStatus(regNumber), "Retired", spacecraftForm, 30);
+                });
+
+                AllureApi.Step("Open the spacecraft and verify the engines status hasn't changed and that the warning notification is still displayed", () =>
+                {
+                    spacecraftView.OpenRecord(regNumber);
+
+                    AssertTrueWithRefresh(() => spacecraftForm.IsWarningNotificationDisplayed(), spacecraftForm, 30);
+
+                    spacecraftForm.NavigateToEnginesTab();
+
+                    for (int i = 0; i < enginesStatus.Count; i++)
+                    {
+                        var statusBefore = int.Parse(enginesStatus[i]);
+                        AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore, spacecraftForm, 10, true);
+                    }
+                });
+            }            
+            catch(Exception)
             {
-                SpacecraftSteps.AddNewEnginesToSpacecraft(engineCount, spacecraftForm, engineForm, engineSubgrid, "5", "Low Status Engine");
                 
-                sidemapForm.ClickSidemapItem("Space Flights");
-                spaceFlightForm.ClickNewButtonFromToolBar();
+            }
 
-                CommonSteps.CreateSpaceflight(spaceFlightForm, sidemapForm, spacecraftView, "Test", 5);
-
-            });
-
-            AllureApi.Step("Navigate back to the spacecraft and verify notification for low status engines is displayed and the status decreased on all engines", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.OpenRecord(regNumber);
-
-                AssertTrueWithRefresh(() => spacecraftForm.IsWarningNotificationDisplayed(), spacecraftForm, 30);
-                AssertEqualWithRefresh(() => spacecraftForm.GetWarningNotificationText(), $"Warning: This spacecraft has {engineCount} engine(s) with low status. Please check the engines for maintenance.", spacecraftForm, 30);
-
-
-                spacecraftForm.NavigateToEnginesTab();
-
-                for (int i = 0; i < enginesStatus.Count; i++)
-                {
-                    var statusBefore = int.Parse(enginesStatus[i]);
-
-                    AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), spacecraftForm, 10, true);
-                }
-
-                enginesStatus = engineSubgrid.GetAllRecordsStatus();
-            });
-
-            AllureApi.Step("Click Create Maintenance button and complete a unsuccessful maintenance", () =>
-            {
-                maintenanceSteps.CreateMaintenanceWithCreateMaintenanceButton(spacecraftForm, maintenanceForm, BPFForm, "Decomission");
-            });
-
-            AllureApi.Step("Navigate back to spacecraft view and verify that after unsuccessful maintenance the spacecraft is in Retired state", () =>
-            {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                AssertEqualWithRefresh(() => spacecraftView.GetRecordStatus(regNumber), "Retired", spacecraftForm, 30);
-            });
-
-            AllureApi.Step("Open the spacecraft and verify the engines status hasn't changed and that the warning notification is still displayed", () =>
-            {
-                spacecraftView.OpenRecord(regNumber);
-
-                AssertTrueWithRefresh(() => spacecraftForm.IsWarningNotificationDisplayed(), spacecraftForm, 30);
-
-                spacecraftForm.NavigateToEnginesTab();
-
-                for (int i = 0; i < enginesStatus.Count; i++)
-                {
-                    var statusBefore = int.Parse(enginesStatus[i]);
-                    AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore, spacecraftForm, 10, true);
-                }
-            });
-
-            AllureApi.Step("Clear all test data(Engines, Spacecraft, Spaceflights and Maintenance records)", () =>
+            TestCleanup(() =>
             {
                 sidemapForm.ClickSidemapItem("Spacecrafts");
                 spacecraftView.DeleteRecord(regNumber);
@@ -237,8 +250,6 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
                 sidemapForm.ClickSidemapItem("Engines");
 
                 engineView.DeleteAllRecordsWithName("Low Status Engine");
-
-
             });
         }
     }

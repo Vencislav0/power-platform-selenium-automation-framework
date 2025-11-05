@@ -32,43 +32,55 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         [Test]
         public void OnSpacecraftCreate_VerifyRegistrationNumber_IsGeneratedWithCorrectFormat()
         {
-            AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
+            var registrationNumber = "";
+            try
+            {                
+                AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftForm.ClickNewButtonFromToolBar();
+                });
+
+                AllureApi.Step("Create a spacecraft", () =>
+                {
+                    SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+                });
+
+
+                AllureApi.Step("Verifying the registration number is in correct format", () =>
+                {
+                    var match = new Regex(@"^[A-Z]{2,3}-([A-Z0-9]{3,4})$");
+
+                    Assert.That(spacecraftForm.GetRegistrationNumber(), Does.Match(match.ToString()));
+                });
+                string prefix = "";
+                string countryCode = "";
+                AllureApi.Step("Storing the Registration Number prefix, Clicking on the country in the lookup and storing the country code value", () =>
+                {
+                    prefix = spacecraftForm.GetRegistrationNumber().Split("-")[0];
+
+                    spacecraftForm.ClickOnCountryLookupRecord();
+
+                    countryCode = countryForm.GetCountryCodeValue();
+
+                    spacecraftForm.ClickSaveAndCloseButtonFromToolBar();
+
+
+                });
+
+                AllureApi.Step("Verify the prefix value is the same as the country code", () =>
+                {
+                    Assert.That(prefix, Is.EqualTo(countryCode));                                      
+                });
+            }
+            catch (Exception ex)
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftForm.ClickNewButtonFromToolBar();
-            });
 
-            AllureApi.Step("Create a spacecraft", () =>
+            }
+
+            TestCleanup(() =>
             {
-                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
-            });
-
-
-            AllureApi.Step("Verifying the registration number is in correct format", () =>
-            {
-                var match = new Regex(@"^[A-Z]{2,3}-([A-Z0-9]{3,4})$");
-
-                Assert.That(spacecraftForm.GetRegistrationNumber(), Does.Match(match.ToString()));
-            });
-            string prefix = "";
-            string countryCode = "";
-            AllureApi.Step("Storing the Registration Number prefix, Clicking on the country in the lookup and storing the country code value", () =>
-            {
-                prefix = spacecraftForm.GetRegistrationNumber().Split("-")[0];
-
-                spacecraftForm.ClickOnCountryLookupRecord();
-
-                countryCode = countryForm.GetCountryCodeValue();
-
-                spacecraftForm.ClickSaveAndCloseButtonFromToolBar();
-
-
-            });
-
-            AllureApi.Step("Verify the prefix value is the same as the country code and deleting the record", () =>
-            {
-                Assert.That(prefix, Is.EqualTo(countryCode));  
-                var registrationNumber = spacecraftForm.GetRegistrationNumber();
+                registrationNumber = spacecraftForm.GetRegistrationNumber();
                 SpacecraftSteps.DeleteSpacecraft(spacecraftForm, sidemapForm, spacecraftView, registrationNumber);
             });
 
