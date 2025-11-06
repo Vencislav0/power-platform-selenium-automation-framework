@@ -20,6 +20,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected Button addExistingRecordButton;
         protected Button overflowButton;
         protected Button refreshButton;
+        protected Button editButton;
         protected string _name;
         protected string _subgridLocator = "//div[contains(@data-id, 'dataSetRoot')]";
 
@@ -27,10 +28,11 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             _driver = driver;
             _locator = new Label(_driver, By.XPath(_subgridLocator), "Subgrid Form");
-            newRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'Add New')]"), "New Record Button");
-            overflowButton = new Button(_driver, By.XPath("//button[contains(@id, 'OverflowButton') and contains(translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'subgrid')]"), "Overflow Button: Subgrid");
-            addExistingRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'exists')]"), "Existing Record Button");
-            refreshButton = new Button(_driver, By.XPath("//button[contains(@data-id, 'RefreshButton') and contains(@data-id, 'SubGrid')]"), "Refresh Subgrid Button");
+            editButton = new Button(_driver, By.XPath("//button[contains(@id, 'SubGridStandard') and @aria-label='Edit']"), $"{name} Edit Button");
+            newRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'Add New')]"), $"New Record Button: {name}");
+            overflowButton = new Button(_driver, By.XPath("//button[contains(@id, 'OverflowButton') and contains(translate(@id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'subgrid')]"), $"Overflow Button: {name}");
+            addExistingRecordButton = new Button(_driver, By.XPath("//button[contains(@title, 'exists')]"), $"Existing Record Button: {name}");
+            refreshButton = new Button(_driver, By.XPath("//button[contains(@data-id, 'RefreshButton') and contains(@data-id, 'SubGrid')]"), $"Refresh Button: {name}");
             _name = name;
         }
 
@@ -66,13 +68,15 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             var record = new Label(_driver, By.XPath($"{_subgridLocator}//span[contains(text(), '{recordName}')]"), $"{recordName} Record");
 
             record.Click();
+            editButton.Click();
         }
 
         public void OpenRecord(int index)
         {
             var record = new Label(_driver, By.XPath($"(//div[contains(@aria-label, 'Press SPACE to')])[{index}]//div[contains(@col-id, 'space')][1]"), $"Record at index: {index}");
 
-            record.DoubleClick();
+            record.Click();    
+            editButton.Click();
         }
 
         public string GetRecordStatus(int index)
@@ -98,6 +102,13 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             var records = new ElementsCollection(_driver, By.XPath($"//label[@aria-label]/ancestor::div[contains(@aria-label, 'Press SPACE to')]"), $"{_name} Records");
 
             return records.Count();
+        }
+
+        public int GetRecordsCount(TimeSpan timeout)
+        {
+            var records = new ElementsCollection(_driver, By.XPath($"//label[@aria-label]/ancestor::div[contains(@aria-label, 'Press SPACE to')]"), $"{_name} Records");
+
+            return records.Count(timeout);
         }
 
         public List<string> GetAllRecordsStatus()
@@ -135,7 +146,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void ClickRefreshButton()
         {
-            if (refreshButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            if (refreshButton.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
             {
                 refreshButton.Click();
             }

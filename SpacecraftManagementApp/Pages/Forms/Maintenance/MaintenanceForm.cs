@@ -73,11 +73,15 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Maintenance
         {
             incidentCategoryLookup.ClickRecordOnLookup();
         }
-      
+
 
         public int GetMaintenaceTasksAmount()
         {
             return maintenanceTasksSubgrid.GetRecordsCount();
+        }
+        public int GetMaintenaceTasksAmount(TimeSpan timeout)
+        {
+            return maintenanceTasksSubgrid.GetRecordsCount(timeout);
         }
 
         public List<string> GetAllMaintenanceTasksStatus()
@@ -118,7 +122,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Maintenance
                 if (dialogPopupOkButton.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
                 {
                     Logger.Debug("No more popups detected.");
-                    dialogPopupOkButton.Click();
+                    actions.MoveToElement(dialogPopupOkButton.GetElement()).SendKeys(Keys.Enter).Perform();
                     Thread.Sleep(500);
                 }
                 else

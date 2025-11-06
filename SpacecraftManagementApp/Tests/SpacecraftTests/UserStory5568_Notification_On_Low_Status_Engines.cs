@@ -63,21 +63,23 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                     Assert.That(spacecraftForm.GetWarningNotificationText(), Is.EqualTo($"Warning: This spacecraft has {engineAmount} engine(s) with low status. Please check the engines for maintenance."));                    
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Assert.Fail($"Test Failed. {ex}");
             }
-
-            TestCleanup(() =>
+            finally
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.DeleteRecord(regNumber);
+                TestCleanup(() =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.DeleteRecord(regNumber);
 
-                areaSwitcherForm.SelectArea("Engine Department");
-                sidemapForm.ClickSidemapItem("Engines");
-                engineView.DeleteAllRecordsWithName("Low Status Engine");
-            });
-
+                    areaSwitcherForm.SelectArea("Engine Department");
+                    sidemapForm.ClickSidemapItem("Engines");
+                    engineView.DeleteAllRecordsWithName("Low Status Engine");
+                });
+            }
+            
         }
     }
 }

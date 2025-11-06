@@ -58,18 +58,18 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                     Assert.That(engineSubgrid.GetRecordsCount(), Is.EqualTo(engineCount));                   
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Assert.Fail($"Test Failed. {ex}");
             }
-
-            TestCleanup(() =>
+            finally
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.DeleteRecord(regNumber);
-            });
-
-
+                TestCleanup(() =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.DeleteRecord(regNumber);
+                });
+            }           
 
         }
 

@@ -46,15 +46,17 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                     Assert.That(spacecraftView.GetRecordsCount(), Is.EqualTo(initialRecordCount + 1), "Spacecraft was not displayed on the view");                    
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Assert.Fail($"Test Failed. {ex}");
             }
-
-            TestCleanup(() =>
+            finally
             {
-                spacecraftView.DeleteRecord(regNumber);
-            });
+                TestCleanup(() =>
+                {
+                    spacecraftView.DeleteRecord(regNumber);
+                });
+            }           
         }
 
         [Test]

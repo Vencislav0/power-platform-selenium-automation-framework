@@ -4,6 +4,7 @@ using Automation_Framework.Framework.Logging;
 using Automation_Framework.Framework.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.BiDi.BrowsingContext;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         protected Random random;
         protected WebDriverWait wait;
         protected Label warningNotification;
+        protected Actions actions;
 
         public BaseForm(IWebDriver driver, By locator, string name) 
         { 
@@ -37,6 +39,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             _locator = locator;
             _name = name;
 
+            actions = new Actions(_driver);
             formElement = new Label(_driver, locator, name);           
             newButton = new Button(_driver, By.XPath("//button[@aria-label='New']"), "New Button");
             overflowButton = new Button(_driver, By.XPath("//button[@data-id='OverflowButton' and contains(@aria-label, 'More commands for')]"), "Overflow Button");
@@ -46,7 +49,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             customWaits = new CustomWaits(By.XPath("//div[@id='topBar']"), driver, Timeouts.API);
             titleHeader = new Label(_driver, By.XPath("//h1[@data-id='header_title']"), "Form Title");            
             refreshButton = new Button(_driver, By.XPath("//button[@aria-label='Refresh']"), "Refresh Button");
-            warningNotification = new Label(driver, By.XPath("//span[@data-id='warningNotification']"), "Warning Notification on Spacecraft Form");
+            warningNotification = new Label(_driver, By.XPath("//span[@data-id='warningNotification']"), "Warning Notification on Spacecraft Form");
             wait = new WebDriverWait(_driver, Timeouts.API);
             random = new Random();
 
@@ -117,7 +120,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void ClickRefreshButtonFromToolBar()
         {
-            if (refreshButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            if (refreshButton.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
             {
                 refreshButton.Click();
             }
