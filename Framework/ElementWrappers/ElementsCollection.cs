@@ -53,6 +53,12 @@ namespace Automation_Framework.Framework.ElementWrappers
             return elements.Count;
         }
 
+        public int Count(TimeSpan timeout)
+        {
+            var elements = GetElements(timeout);
+            return elements.Count;
+        }
+
         public List<string> GetTexts(By locator)
         {
             var elements = GetElements();

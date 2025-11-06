@@ -9,15 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Automation_Framework.SpacecraftManagementApp.Tests;
+using Automation_Framework.Framework.PowerApps.ElementWrappers;
+using Automation_Framework.Framework.Constants;
 
 namespace Automation_Framework.SpacecraftManagementApp.Steps
 {    
     public class MaintenanceSteps : BaseTest
-    {
-        private MaintenanceTasksSubgrid? _maintenanceTaskSubgrid;
-
-        public MaintenanceTasksSubgrid maintenanceTasksSubgrid => _maintenanceTaskSubgrid ??= new MaintenanceTasksSubgrid(driver);
-        public void CreateMaintenanceWithCreateMaintenanceButton(SpacecraftForm spacecraftForm, MaintenanceForm maintenanceForm, BPFForm BPFForm, string finalOutcome)
+    {        
+        public void CreateMaintenanceWithCreateMaintenanceButton(SpacecraftForm spacecraftForm, BaseSubgrid subgrid, MaintenanceForm maintenanceForm, BPFForm BPFForm, string finalOutcome)
         {
             AllureApi.Step("Click the Create Maintenance button", () =>
             {
@@ -66,7 +65,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
             {
                 maintenanceForm.SwitchToRepairTab();
 
-                AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(), lv2CategoriesCount, maintenanceForm, 30, true);
+                AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(Timeouts.DEFAULT_INTERVAL), lv2CategoriesCount, subgrid, maintenanceForm, 30, true);
             });
 
             AllureApi.Step("Complete each maintenance task then complete the repair stage", () =>

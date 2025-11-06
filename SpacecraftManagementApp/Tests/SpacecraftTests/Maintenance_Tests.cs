@@ -19,6 +19,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private MaintenanceForm? _maintenanceForm;        
         private BPFForm? _bpfForm;
         private MaintenanceView? _maintenanceView;
+        private MaintenanceTasksSubgrid? _maintenanceTasksSubgrid;
 
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
@@ -26,6 +27,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         public MaintenanceForm maintenanceForm => _maintenanceForm ??= new MaintenanceForm(driver);
         public BPFForm BPFForm => _bpfForm ??= new BPFForm(driver);
         public MaintenanceView maintenanceView => _maintenanceView ??= new MaintenanceView(driver);
+        public MaintenanceTasksSubgrid maintenanceTasksSubgrid => _maintenanceTasksSubgrid ??= new MaintenanceTasksSubgrid(driver);
         
         [Test]
         public void Test_PerformMaintenance_OnSpacecraft_ShouldCompleteSuccessfully()
@@ -86,7 +88,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                 {
                     maintenanceForm.SwitchToRepairTab();
 
-                    AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(), lv2CategoriesCount, maintenanceForm, 30, true);
+                    AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(), lv2CategoriesCount, maintenanceTasksSubgrid, maintenanceForm, 30, true);
                 });
 
                 AllureApi.Step("Try to complete repair stage without completing any task and verify validation message is displayed with correct text and close it.", () =>
@@ -158,16 +160,18 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                 });
                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Assert.Fail($"Test Failed. {ex}");
             }
-
-            TestCleanup(() =>
+            finally
             {
-                sidemapForm.ClickSidemapItem("Maintenances");
-                maintenanceView.DeleteAllRecords();
-            });
+                TestCleanup(() =>
+                {
+                    sidemapForm.ClickSidemapItem("Maintenances");
+                    maintenanceView.DeleteAllRecords();
+                });
+            }            
         }      
         
     }

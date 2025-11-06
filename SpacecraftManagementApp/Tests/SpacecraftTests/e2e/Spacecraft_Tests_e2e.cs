@@ -31,7 +31,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
         private SpaceFlightView? _spaceFlightView;
         private AreaSwitcherForm? _areaSwitcherForm;
         private EngineView? _engineView;
-
+        private MaintenanceTasksSubgrid? _maintenanceTasksSubgrid;
         public SpacecraftForm spacecraftForm => _spacecraftForm ??= new SpacecraftForm(driver);
         public SpacecraftView spacecraftView => _spacecraftView ??= new SpacecraftView(driver);
         public SpaceFlightForm spaceFlightForm => _spaceFlightForm ??= new SpaceFlightForm(driver);
@@ -45,6 +45,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
         public SpaceFlightView spaceFlightView => _spaceFlightView ??= new SpaceFlightView(driver);
         public AreaSwitcherForm areaSwitcherForm => _areaSwitcherForm ??= new AreaSwitcherForm(driver);
         public EngineView engineView => _engineView ??= new EngineView(driver);
+        public MaintenanceTasksSubgrid maintenanceTasksSubgrid => _maintenanceTasksSubgrid??= new MaintenanceTasksSubgrid(driver);
 
         [Test]
         public void WhenSpacecraftWithLowStatusEnginesIsMaintained_ShouldReplenishEnginesAndSetStationedStatus()
@@ -101,7 +102,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
 
                 AllureApi.Step("Click Create Maintenance button and complete a successful maintenance", () =>
                 {
-                    maintenanceSteps.CreateMaintenanceWithCreateMaintenanceButton(spacecraftForm, maintenanceForm, BPFForm, "Return to Service");
+                    maintenanceSteps.CreateMaintenanceWithCreateMaintenanceButton(spacecraftForm, maintenanceTasksSubgrid,  maintenanceForm, BPFForm, "Return to Service");
                 });
 
                 AllureApi.Step("Navigate back to spacecraft view and verify that after successful maintenance the spacecraft is in Stationed state", () =>
@@ -125,28 +126,31 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
                     }
                 });
             }            
-            catch(Exception)
+            catch(Exception ex)
             {
-                
+                Assert.Fail($"Test Failed. {ex}");
             }
-
-            TestCleanup(() =>
+            finally
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.DeleteRecord(regNumber);
+                TestCleanup(() =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.DeleteRecord(regNumber);
 
-                sidemapForm.ClickSidemapItem("Space Flights");
-                spaceFlightView.DeleteAllRecords();
+                    sidemapForm.ClickSidemapItem("Space Flights");
+                    spaceFlightView.DeleteAllRecords();
 
-                sidemapForm.ClickSidemapItem("Maintenances");
-                maintenanceView.DeleteAllRecords();
+                    sidemapForm.ClickSidemapItem("Maintenances");
+                    maintenanceView.DeleteAllRecords();
 
-                areaSwitcherForm.SelectArea("Engine Department");
+                    areaSwitcherForm.SelectArea("Engine Department");
 
-                sidemapForm.ClickSidemapItem("Engines");
+                    sidemapForm.ClickSidemapItem("Engines");
 
-                engineView.DeleteAllRecordsWithName("Low Status Engine");
-            });
+                    engineView.DeleteAllRecordsWithName("Low Status Engine");
+                });
+            }
+            
         }
 
         [Test]
@@ -205,7 +209,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
 
                 AllureApi.Step("Click Create Maintenance button and complete a unsuccessful maintenance", () =>
                 {
-                    maintenanceSteps.CreateMaintenanceWithCreateMaintenanceButton(spacecraftForm, maintenanceForm, BPFForm, "Decomission");
+                    maintenanceSteps.CreateMaintenanceWithCreateMaintenanceButton(spacecraftForm,maintenanceTasksSubgrid, maintenanceForm, BPFForm, "Decomission");
                 });
 
                 AllureApi.Step("Navigate back to spacecraft view and verify that after unsuccessful maintenance the spacecraft is in Retired state", () =>
@@ -228,29 +232,31 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
                         AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore, spacecraftForm, 10, true);
                     }
                 });
-            }            
-            catch(Exception)
-            {
-                
             }
-
-            TestCleanup(() =>
+            catch (Exception ex)
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.DeleteRecord(regNumber);
+                Assert.Fail($"Test Failed. {ex}");
+            }
+            finally
+            {
+                TestCleanup(() =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.DeleteRecord(regNumber);
 
-                sidemapForm.ClickSidemapItem("Space Flights");
-                spaceFlightView.DeleteAllRecords();
+                    sidemapForm.ClickSidemapItem("Space Flights");
+                    spaceFlightView.DeleteAllRecords();
 
-                sidemapForm.ClickSidemapItem("Maintenances");
-                maintenanceView.DeleteAllRecords();
+                    sidemapForm.ClickSidemapItem("Maintenances");
+                    maintenanceView.DeleteAllRecords();
 
-                areaSwitcherForm.SelectArea("Engine Department");
+                    areaSwitcherForm.SelectArea("Engine Department");
 
-                sidemapForm.ClickSidemapItem("Engines");
+                    sidemapForm.ClickSidemapItem("Engines");
 
-                engineView.DeleteAllRecordsWithName("Low Status Engine");
-            });
+                    engineView.DeleteAllRecordsWithName("Low Status Engine");
+                });
+            }
         }
     }
 }

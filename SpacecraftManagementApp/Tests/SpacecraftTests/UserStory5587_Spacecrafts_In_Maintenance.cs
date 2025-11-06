@@ -19,7 +19,6 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         private SpacecraftForm? _spacecraftForm;
         private SpacecraftView? _spacecraftView;
         private SideMapForm? _sidemapForm;
-        private CountryForm? _countryForm;
         private MaintenanceView? _maintenanceView;
         private FleetForm? _fleetForm;
         private FleetView? _fleetView;
@@ -74,29 +73,31 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                     Assert.That(fleetForm.GetWarningNotificationText(), Is.EqualTo("Warning: The following spacecraft(s) are currently in maintenance: Test. Please check the spacecraft details for more information."));
                 });                              
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Assert.Fail($"Test Failed. {ex}");
             }
-
-            TestCleanup(() =>
+            finally
             {
-                
-               sidemapForm.ClickSidemapItem("Maintenances");
-               maintenanceView.DeleteAllRecords();                                              
-               sidemapForm.ClickSidemapItem("Spacecrafts");
-               spacecraftView.DeleteRecord(spacecraftRegistrationNumber);
-                
-            });
+                TestCleanup(() =>
+                {
 
-            AllureApi.Step("Navigate to Military Fleet and verify that the warning notification is not present after spacecraft deletion", () =>
-            {
-                sidemapForm.ClickSidemapItem("Fleets");
-                fleetView.OpenRecord("Military Fleet");
+                    sidemapForm.ClickSidemapItem("Maintenances");
+                    maintenanceView.DeleteAllRecords();
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.DeleteRecord(spacecraftRegistrationNumber);
 
-                AssertTrueWithRefresh(() => !fleetForm.IsWarningNotificationDisplayed(), fleetForm, 10);
-            });
+                });
 
+                AllureApi.Step("Navigate to Military Fleet and verify that the warning notification is not present after spacecraft deletion", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Fleets");
+                    fleetView.OpenRecord("Military Fleet");
+
+                    AssertTrueWithRefresh(() => !fleetForm.IsWarningNotificationDisplayed(), fleetForm, 10);
+                });
+            }
+            
         }
     }
 }

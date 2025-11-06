@@ -84,20 +84,21 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
 
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
+                Assert.Fail($"Test Failed. {ex}");
             }
+            finally
+            {
+                TestCleanup(() => {
+                    sidemapForm.ClickSidemapItem("Maintenances");
+                    maintenanceView.DeleteAllRecords();
 
-            TestCleanup(() => {
-                sidemapForm.ClickSidemapItem("Maintenances");
-                maintenanceView.DeleteAllRecords();
-
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.DeleteRecord(regNumber);
-            });
-
-
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.DeleteRecord(regNumber);
+                });
+            }
+            
         }
     }
 }

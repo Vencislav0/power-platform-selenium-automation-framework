@@ -23,7 +23,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
     {
         protected Random random = new Random();
         protected IWebDriver driver;
-        protected BaseSubgrid subgrid;
+        
 
         [OneTimeSetUp]
         public void GlobalSetup()
@@ -33,8 +33,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
 
         [SetUp]
         public void Setup()
-        {
-            subgrid = new BaseSubgrid(driver, "Subgrid");
+        {           
             var testName = TestContext.CurrentContext.Test.Name;
             driver.Navigate().GoToUrl("https://org23ca5b26.crm4.dynamics.com/main.aspx?appid=faa9e15a-2f8a-f011-b4cb-7ced8d96a51b&forceUCI=1&pagetype=entitylist&etn=space_maintenance&viewid=b4d4d759-f4de-49cb-b88c-d0abb278bdf3&viewType=1039");
             Logger.SetLogFileForTest(testName);
@@ -110,12 +109,42 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
                     {
                         form.ClickRefreshButtonFromToolBar();
                     }
+                    
+                    Thread.Sleep(1500);
+                }
+            }
+
+            Assert.Fail($"Value did not match expected '{expectedResult}' after {maxRetries} retries.");
+        }
+
+        public void AssertEqualWithRefresh<T>(Func<T> actualResult, T expectedResult,BaseSubgrid subgrid, BaseForm form, int maxRetries = 3, bool subgridRefresh = false)
+        {
+            var retryCount = 0;
+
+            while (retryCount < maxRetries)
+            {
+
+                var actual = actualResult();
+
+                if (Equals(actual, expectedResult))
+                {
+                    return;
+                }
+
+                retryCount++;
+                if (retryCount < maxRetries)
+                {
+                    Logger.Debug($"Attempt {retryCount + 1} failed, refreshing and retrying..");
+                    if (subgridRefresh == false)
+                    {
+                        form.ClickRefreshButtonFromToolBar();
+                    }
                     else
                     {
                         subgrid.ClickRefreshButton();
                     }
 
-                    Thread.Sleep(500);
+                    Thread.Sleep(1500);
                 }
             }
 
@@ -123,6 +152,34 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
         }
 
         public void AssertTrueWithRefresh(Func<bool> condition, BaseForm form, int maxRetries = 3, bool subgridRefresh = false)
+        {
+            var retryCount = 0;
+            while (retryCount < maxRetries)
+            {
+                if (condition())
+                {
+                    return;
+                }
+
+                retryCount++;
+
+                if (retryCount < maxRetries)
+                {
+                    Logger.Debug($"Attempt {retryCount + 1} failed, refreshing and retrying..");
+                    if (subgridRefresh == false)
+                    {
+                        form.ClickRefreshButtonFromToolBar();
+                    }
+                    
+                    Thread.Sleep(500);
+                }
+            }
+
+            Assert.Fail($"Condition was not true after {maxRetries} retries with refreshes.");
+
+        }
+
+        public void AssertTrueWithRefresh(Func<bool> condition,BaseSubgrid subgrid, BaseForm form, int maxRetries = 3, bool subgridRefresh = false)
         {
             var retryCount = 0;
             while (retryCount < maxRetries)

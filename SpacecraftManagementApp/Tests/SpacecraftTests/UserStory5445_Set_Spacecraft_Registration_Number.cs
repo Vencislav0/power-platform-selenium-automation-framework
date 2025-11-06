@@ -75,15 +75,17 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             }
             catch (Exception ex)
             {
-
+                Assert.Fail($"Test Failed. {ex}");
             }
-
-            TestCleanup(() =>
+            finally
             {
-                registrationNumber = spacecraftForm.GetRegistrationNumber();
-                SpacecraftSteps.DeleteSpacecraft(spacecraftForm, sidemapForm, spacecraftView, registrationNumber);
-            });
-
+                TestCleanup(() =>
+                {
+                    registrationNumber = spacecraftForm.GetRegistrationNumber();
+                    SpacecraftSteps.DeleteSpacecraft(spacecraftForm, sidemapForm, spacecraftView, registrationNumber);
+                });
+            }
+            
         }
 
         [Test]
@@ -104,8 +106,6 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                 Assert.That(spacecraftForm.GetSaveStatus(), Does.Contain("Saved"), "Failed saving spacecraft after correct registration number was entered.");
                 Assert.That(spacecraftForm.GetRegistrationNumber(), Does.Match(formatToMatch), "the new value entered did not match the format requirments and was saved successfully");
             });
-
-
         }
 
         [Test]
