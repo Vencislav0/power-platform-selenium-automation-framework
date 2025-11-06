@@ -53,7 +53,14 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
         {
             var record = new Label(_driver, By.XPath($"//label[@aria-label='${name}']/ancestor::div[@aria-label='Press SPACE to select this row.']"), $"{name} Record");
 
-            return record.IsDisplayed();
+            return record.IsDisplayed(Timeouts.DEFAULT_INTERVAL);
+        }
+
+        public bool IsRecordDisplayed(int index)
+        {
+            var record = new Label(_driver, By.XPath($"(//label[@aria-label])[{1}]/ancestor::div[@aria-label='Press SPACE to select this row.']"), $"Record at index: {index}");
+
+            return record.IsDisplayed(Timeouts.DEFAULT_INTERVAL);
         }
 
         public void OpenRecord(string name)
