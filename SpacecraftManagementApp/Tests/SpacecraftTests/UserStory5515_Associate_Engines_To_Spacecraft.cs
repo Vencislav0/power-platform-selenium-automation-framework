@@ -60,7 +60,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             }
             catch (Exception ex)
             {
-                Assert.Fail($"Test Failed. {ex}");
+                HandleFailure(ex);
             }
             finally
             {
@@ -76,37 +76,45 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         [Test]
         public void Test_AddEnginesToSpacecraft_MoreEnginesThanAllowed_ThrowsError()
         {
-            AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
+            try
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftForm.ClickNewButtonFromToolBar();
-            });
 
-            var engineCount = 0;
-            var regNumber = "";
-            AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+
+                AllureApi.Step("Navigating to Spacecraft View, and click new button", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftForm.ClickNewButtonFromToolBar();
+                });
+
+                var engineCount = 0;
+                var regNumber = "";
+                AllureApi.Step("Creating a military spacecraft and storing the max engine count and the reg number", () =>
+                {
+                    SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
+                    regNumber = spacecraftForm.GetRegistrationNumber();
+
+                    engineCount = SpacecraftSteps.GetEngineCount(spacecraftForm);
+                });
+
+                AllureApi.Step("Navigate to engines tab and on the subrid add more existing engines than the model allows", () =>
+                {
+                    SpacecraftSteps.AddEnginesToSpacecraft(engineCount + 1, spacecraftForm, engineSubgrid, lookupRecordsForm);
+                });
+
+                AllureApi.Step("Verify error message is shown and has correct text and delete the spacecraft", () =>
+                {
+                    Assert.That(spacecraftForm.IsErrorMessageDisplayed(), Is.True);
+                    Assert.That(spacecraftForm.GetErrorMessageText(), Is.EqualTo($"Cannot associate engine to spacecraft. The spacecraft model allows a maximum of {engineCount} engines, but the spacecraft already has {engineCount} engines associated."));
+                    spacecraftForm.ClickErrorOkayButton();
+
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.DeleteRecord(regNumber);
+                });
+            }
+            catch (Exception ex)
             {
-                SpacecraftSteps.CreateMilitarySpacecraft(spacecraftForm);
-                regNumber = spacecraftForm.GetRegistrationNumber();
-
-                engineCount = SpacecraftSteps.GetEngineCount(spacecraftForm);
-            });
-
-            AllureApi.Step("Navigate to engines tab and on the subrid add more existing engines than the model allows", () =>
-            {
-                SpacecraftSteps.AddEnginesToSpacecraft(engineCount + 1, spacecraftForm, engineSubgrid, lookupRecordsForm);
-            });
-
-            AllureApi.Step("Verify error message is shown and has correct text and delete the spacecraft", () =>
-            {
-                Assert.That(spacecraftForm.IsErrorMessageDisplayed(), Is.True);
-                Assert.That(spacecraftForm.GetErrorMessageText(), Is.EqualTo($"Cannot associate engine to spacecraft. The spacecraft model allows a maximum of {engineCount} engines, but the spacecraft already has {engineCount} engines associated."));
-                spacecraftForm.ClickErrorOkayButton();
-
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.DeleteRecord(regNumber);
-            });
-
+                HandleFailure(ex);
+            }
         }
         
     }

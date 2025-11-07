@@ -75,7 +75,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             }
             catch (Exception ex)
             {
-                Assert.Fail($"Test Failed. {ex}");
+                HandleFailure(ex);
             }
             finally
             {
@@ -91,52 +91,68 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         [Test]
         public void RegistrationCodeUpdate_VerifySuccessfulUpdate_WhenCorrectFormat()
         {
-            AllureApi.Step("Navigating to Spacecraft View, and open existing spacecraft record", () =>
+            try
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.OpenRecord(1);
-            });
 
-            var formatToMatch = new Regex(@"^[A-Z]{2,3}-([A-Z0-9]{3,4})$");
+                AllureApi.Step("Navigating to Spacecraft View, and open existing spacecraft record", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.OpenRecord(1);
+                });
 
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TEST", true);
+                var formatToMatch = new Regex(@"^[A-Z]{2,3}-([A-Z0-9]{3,4})$");
 
-            AllureApi.Step("Verify successful save and the registration number is in the correct format", () =>
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TEST", true);
+
+                AllureApi.Step("Verify successful save and the registration number is in the correct format", () =>
+                {
+                    Assert.That(spacecraftForm.GetSaveStatus(), Does.Contain("Saved"), "Failed saving spacecraft after correct registration number was entered.");
+                    Assert.That(spacecraftForm.GetRegistrationNumber(), Does.Match(formatToMatch), "the new value entered did not match the format requirments and was saved successfully");
+                });
+            }
+            catch(Exception ex)
             {
-                Assert.That(spacecraftForm.GetSaveStatus(), Does.Contain("Saved"), "Failed saving spacecraft after correct registration number was entered.");
-                Assert.That(spacecraftForm.GetRegistrationNumber(), Does.Match(formatToMatch), "the new value entered did not match the format requirments and was saved successfully");
-            });
+                HandleFailure(ex);
+            }
         }
 
         [Test]
-        
         public void RegistrationCodeUpdate_VerifyErrorMessage_WhenInvalidInput()
         {
-            AllureApi.Step("Navigating to Spacecraft View, and open existing spacecraft record", () =>
+            try
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftView.OpenRecord(1);
-            });
 
-            var formatToMatch = new Regex(@"^[A-Z]{2,3}-([A-Z0-9]{3,4})$");
 
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-INVALID", false);
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-test", false);
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TEST1", false);
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TE", false);
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-", false);
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BGNG-TEST", false);
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "B-TEST", false);
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TE$T", false);
-            SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-INVALID", false);
+                AllureApi.Step("Navigating to Spacecraft View, and open existing spacecraft record", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftView.OpenRecord(1);
+                });
 
-            AllureApi.Step("Verify that the record didn't save and that the registration number format is incorrect", () =>
+                var formatToMatch = new Regex(@"^[A-Z]{2,3}-([A-Z0-9]{3,4})$");
+
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-INVALID", false);
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-test", false);
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TEST1", false);
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TE", false);
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-", false);
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BGNG-TEST", false);
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "B-TEST", false);
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-TE$T", false);
+                SpacecraftSteps.UpdateRegistrationNumber(spacecraftForm, "BG-INVALID", false);
+
+                AllureApi.Step("Verify that the record didn't save and that the registration number format is incorrect", () =>
+                {
+
+                    Assert.That(spacecraftForm.GetSaveStatus(), Does.Contain("Unsaved"), "Failed saving spacecraft after correct registration number was entered.");
+                    Assert.That(spacecraftForm.GetRegistrationNumber(), !Does.Match(formatToMatch), "the new value entered did not match the format requirments and was saved successfully");
+
+                });
+            }
+            catch (Exception ex)
             {
-                
-                Assert.That(spacecraftForm.GetSaveStatus(), Does.Contain("Unsaved"), "Failed saving spacecraft after correct registration number was entered.");
-                Assert.That(spacecraftForm.GetRegistrationNumber(), !Does.Match(formatToMatch), "the new value entered did not match the format requirments and was saved successfully");
-
-            });
-        }
+                HandleFailure(ex);
+            }
+        } 
     }
 }
