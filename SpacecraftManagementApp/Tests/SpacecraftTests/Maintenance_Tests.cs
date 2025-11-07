@@ -88,7 +88,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
                 {
                     maintenanceForm.SwitchToRepairTab();
 
-                    AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(), lv2CategoriesCount, maintenanceTasksSubgrid, maintenanceForm, 30, true);
+                    AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(), lv2CategoriesCount, maintenanceTasksSubgrid, 30);
                 });
 
                 AllureApi.Step("Try to complete repair stage without completing any task and verify validation message is displayed with correct text and close it.", () =>

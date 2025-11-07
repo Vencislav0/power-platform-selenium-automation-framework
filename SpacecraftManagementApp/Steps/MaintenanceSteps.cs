@@ -65,7 +65,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
             {
                 maintenanceForm.SwitchToRepairTab();
 
-                AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(Timeouts.DEFAULT_INTERVAL), lv2CategoriesCount, subgrid, maintenanceForm, 30, true);
+                AssertEqualWithRefresh(() => maintenanceForm.GetMaintenaceTasksAmount(Timeouts.DEFAULT_INTERVAL), lv2CategoriesCount, subgrid, 30);
             });
 
             AllureApi.Step("Complete each maintenance task then complete the repair stage", () =>
