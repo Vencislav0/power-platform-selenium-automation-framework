@@ -48,16 +48,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             {
                 byte[] logBytes = File.ReadAllBytes(logFilePath);
                 AllureApi.AddAttachment("Test Execution Logs", "text/plain", logBytes, ".txt");
-            }
-
-            var testStatus = TestContext.CurrentContext.Result.Outcome.Status;
-
-            if (testStatus == NUnit.Framework.Interfaces.TestStatus.Failed)
-            {
-                var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
-                var screenshotBytes = screenshot.AsByteArray;
-                AllureApi.AddAttachment("Screenshot", "image/png", screenshotBytes);
-            }
+            }            
         }
 
         [OneTimeTearDown]
@@ -66,24 +57,52 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             driver.Dispose();
             LogManager.Shutdown();
         }
-
-
-        public void LoginPowerApps(string username, string password)
+        
+        public void TestCleanup(Action cleanup)
         {
-            var nextButton = new Button(driver, By.Id("idSIButton9"), "Next Button");
-
-            var emailField = new Textbox(driver, By.Id("i0116"), "Email Field");
-
-            if (!emailField.IsDisplayed(Timeouts.EXTRA_SHORT))
+            AllureApi.Step("Performing cleanup of test data.", () =>
             {
-                return;
+                try
+                {
+                    driver.Navigate().Refresh();
+                    cleanup();
+                }
+                catch (Exception ex) { Logger.Error($"Cleanup failed: {ex}"); }
+            });
+        }
+
+        protected void HandleFailure(Exception ex)
+        {
+            try
+            {
+                var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
+                AllureApi.AddAttachment($"Screenshot", "image/png", screenshot.AsByteArray);
             }
-            emailField.SendKeys(username);
-            nextButton.Click();
-            Thread.Sleep(2000);
-            nextButton.Click();
+            catch (Exception sx)
+            {
+                Logger.Error($"Failed to capture screenshot: {sx.Message}");
+            }
 
+            Assert.Fail($"Test failed. {ex}");
+        }
 
+        protected void RunTest(Action testSteps, Action cleanup = null)
+        {
+            try
+            {
+                testSteps();
+            }
+            catch (Exception ex)
+            {
+                HandleFailure(ex);
+            }
+            finally
+            {
+                if (cleanup != null)
+                {
+                    TestCleanup(cleanup);
+                }
+            }
         }
 
         //Power Platform
@@ -195,17 +214,23 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
 
         }
 
-        public void TestCleanup(Action cleanup)
+        public void LoginPowerApps(string username, string password)
         {
-            AllureApi.Step("Performing cleanup of test data.", () =>
+            var nextButton = new Button(driver, By.Id("idSIButton9"), "Next Button");
+
+            var emailField = new Textbox(driver, By.Id("i0116"), "Email Field");
+
+            if (!emailField.IsDisplayed(Timeouts.EXTRA_SHORT))
             {
-                try 
-                { 
-                    driver.Navigate().Refresh();
-                    cleanup(); 
-                }
-                catch (Exception ex) { Logger.Error($"Cleanup failed: {ex}"); }
-            });            
+                return;
+            }
+            emailField.SendKeys(username);
+            nextButton.Click();
+            Thread.Sleep(2000);
+            nextButton.Click();
+
+
         }
+
     }
 }

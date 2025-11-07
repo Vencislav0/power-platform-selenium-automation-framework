@@ -162,7 +162,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             }
             catch (Exception ex)
             {
-                Assert.Fail($"Test Failed. {ex}");
+               HandleFailure(ex);
             }
             finally
             {

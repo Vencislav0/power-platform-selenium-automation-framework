@@ -128,7 +128,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
             }            
             catch(Exception ex)
             {
-                Assert.Fail($"Test Failed. {ex}");
+                HandleFailure(ex);
             }
             finally
             {
@@ -235,7 +235,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
             }
             catch (Exception ex)
             {
-                Assert.Fail($"Test Failed. {ex}");
+                HandleFailure(ex);
             }
             finally
             {

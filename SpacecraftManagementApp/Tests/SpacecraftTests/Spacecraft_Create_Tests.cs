@@ -48,7 +48,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
             }
             catch (Exception ex)
             {
-                Assert.Fail($"Test Failed. {ex}");
+                HandleFailure(ex);
             }
             finally
             {
@@ -62,75 +62,82 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests
         [Test]
         public void UserStory5414_CreateSpacecraft_WithIncompatibleModelToFleet_ThrowsErrorMessage()
         {
-            AllureApi.Step("Navigate to Spacecraft View on the sidemap and click New button", () =>
+            try
             {
-                sidemapForm.ClickSidemapItem("Spacecrafts");
-                spacecraftForm.ClickNewButtonFromToolBar();
-            });
+                AllureApi.Step("Navigate to Spacecraft View on the sidemap and click New button", () =>
+                {
+                    sidemapForm.ClickSidemapItem("Spacecrafts");
+                    spacecraftForm.ClickNewButtonFromToolBar();
+                });
 
-            AllureApi.Step("Fill all mandatory fields", () =>
+                AllureApi.Step("Fill all mandatory fields", () =>
+                {
+                    spacecraftForm.FillName("Tester");
+                    spacecraftForm.FillRandomYear();
+                    spacecraftForm.SelectCountry("Bulgaria");
+                    spacecraftForm.SelectSpaceport("Sofia");
+                });
+
+                AllureApi.Step("Try to create with commercial model and military fleet and save the record", () =>
+                {
+                    spacecraftForm.SelectSpacecraftModel("Commercial");
+                    spacecraftForm.SelectOperationalCompany("Nova");
+
+                    spacecraftForm.SelectFleet("Military");
+
+                    spacecraftForm.ClickSaveButtonFromToolBar(false);
+                });
+
+                AllureApi.Step("Verify Error Message is displayed with the correct text and close it", () =>
+                {
+                    Assert.That(spacecraftForm.IsErrorMessageDisplayed(), Is.True, "Error Message was not visible within the time frame.");
+                    Assert.That(spacecraftForm.GetErrorMessageText(), Is.EqualTo("Cannot assign spacecraft to this fleet. Trying to assign Commercial Spacecraft to a fleet containing Military Spacecrafts. All spacecraft in the fleet must belong to the same category."), "Incorrect Error Message displayed.");
+
+                    spacecraftForm.ClickErrorOkayButton();
+                });
+
+                AllureApi.Step("Try to create with a military model and a commercial fleet and save the record", () =>
+                {
+                    spacecraftForm.SelectSpacecraftModel("Military");
+                    spacecraftForm.SelectIsArmed(IsArmedChoices.Yes);
+
+                    spacecraftForm.SelectFleet("Commercial");
+
+                    spacecraftForm.ClickSaveButtonFromToolBar(false);
+                });
+
+                AllureApi.Step("Verify Error Message is displayed with the correct text and close it", () =>
+                {
+                    Assert.That(spacecraftForm.IsErrorMessageDisplayed(), Is.True, "Error Message was not visible within the time frame.");
+                    Assert.That(spacecraftForm.GetErrorMessageText(), Is.EqualTo("Cannot assign spacecraft to this fleet. Trying to assign Military Spacecraft to a fleet containing Commercial Spacecrafts. All spacecraft in the fleet must belong to the same category."), "Incorrect Error Message displayed.");
+
+                    spacecraftForm.ClickErrorOkayButton();
+                });
+
+                AllureApi.Step("Try to create with a research model and a commercial fleet and save the record", () =>
+                {
+                    spacecraftForm.SelectSpacecraftModel("Research");
+                    spacecraftForm.SelectOrganizationType(OrganizationTypeChoices.Government.ToString());
+
+                    spacecraftForm.SelectFleet("Commercial");
+
+                    spacecraftForm.ClickSaveButtonFromToolBar(false);
+                });
+
+                AllureApi.Step("Verify Error Message is displayed with the correct text and close it", () =>
+                {
+                    Assert.That(spacecraftForm.IsErrorMessageDisplayed(), Is.True, "Error Message was not visible within the time frame.");
+                    Assert.That(spacecraftForm.GetErrorMessageText(), Is.EqualTo("Cannot assign spacecraft to this fleet. Trying to assign Research Spacecraft to a fleet containing Commercial Spacecrafts. All spacecraft in the fleet must belong to the same category."), "Incorrect Error Message displayed.");
+
+                    spacecraftForm.ClickErrorOkayButton();
+                });
+            }
+            catch (Exception ex)
             {
-                spacecraftForm.FillName("Tester");
-                spacecraftForm.FillRandomYear();
-                spacecraftForm.SelectCountry("Bulgaria");
-                spacecraftForm.SelectSpaceport("Sofia");                
-            });
-
-            AllureApi.Step("Try to create with commercial model and military fleet and save the record", () =>
-            {
-                spacecraftForm.SelectSpacecraftModel("Commercial");
-                spacecraftForm.SelectOperationalCompany("Nova");
-
-                spacecraftForm.SelectFleet("Military");
-
-                spacecraftForm.ClickSaveButtonFromToolBar(false);
-            });
-
-            AllureApi.Step("Verify Error Message is displayed with the correct text and close it", () =>
-            {
-                Assert.That(spacecraftForm.IsErrorMessageDisplayed(), Is.True, "Error Message was not visible within the time frame.");
-                Assert.That(spacecraftForm.GetErrorMessageText(), Is.EqualTo("Cannot assign spacecraft to this fleet. Trying to assign Commercial Spacecraft to a fleet containing Military Spacecrafts. All spacecraft in the fleet must belong to the same category."), "Incorrect Error Message displayed.");
-
-                spacecraftForm.ClickErrorOkayButton();
-            });
-
-            AllureApi.Step("Try to create with a military model and a commercial fleet and save the record", () =>
-            {
-                spacecraftForm.SelectSpacecraftModel("Military");               
-                spacecraftForm.SelectIsArmed(IsArmedChoices.Yes);
-
-                spacecraftForm.SelectFleet("Commercial");
-
-                spacecraftForm.ClickSaveButtonFromToolBar(false);
-            });
-
-            AllureApi.Step("Verify Error Message is displayed with the correct text and close it", () =>
-            {
-                Assert.That(spacecraftForm.IsErrorMessageDisplayed(), Is.True, "Error Message was not visible within the time frame.");
-                Assert.That(spacecraftForm.GetErrorMessageText(), Is.EqualTo("Cannot assign spacecraft to this fleet. Trying to assign Military Spacecraft to a fleet containing Commercial Spacecrafts. All spacecraft in the fleet must belong to the same category."), "Incorrect Error Message displayed.");
-
-                spacecraftForm.ClickErrorOkayButton();
-            });
-
-            AllureApi.Step("Try to create with a research model and a commercial fleet and save the record", () =>
-            {
-                spacecraftForm.SelectSpacecraftModel("Research");
-                spacecraftForm.SelectOrganizationType(OrganizationTypeChoices.Government.ToString());
-
-                spacecraftForm.SelectFleet("Commercial");
-
-                spacecraftForm.ClickSaveButtonFromToolBar(false);
-            });
-
-            AllureApi.Step("Verify Error Message is displayed with the correct text and close it", () =>
-            {
-                Assert.That(spacecraftForm.IsErrorMessageDisplayed(), Is.True, "Error Message was not visible within the time frame.");
-                Assert.That(spacecraftForm.GetErrorMessageText(), Is.EqualTo("Cannot assign spacecraft to this fleet. Trying to assign Research Spacecraft to a fleet containing Commercial Spacecrafts. All spacecraft in the fleet must belong to the same category."), "Incorrect Error Message displayed.");
-
-                spacecraftForm.ClickErrorOkayButton();
-            });
+                HandleFailure(ex);
+            }
+                     
         }
-
 
 
 
