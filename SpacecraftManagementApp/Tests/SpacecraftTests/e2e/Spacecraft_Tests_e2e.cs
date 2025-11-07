@@ -95,7 +95,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
                     {
                         var statusBefore = int.Parse(enginesStatus[i]);
 
-                        AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), spacecraftForm, 10, true);
+                        AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), engineSubgrid, 10);
                     }
 
                 });
@@ -122,7 +122,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
                     for (int i = 0; i < enginesStatus.Count; i++)
                     {
 
-                        AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 100, spacecraftForm, 10, true);
+                        AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 100, engineSubgrid, 10);
                     }
                 });
             }            
@@ -201,7 +201,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
                     {
                         var statusBefore = int.Parse(enginesStatus[i]);
 
-                        AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), spacecraftForm, 10, true);
+                        AssertTrueWithRefresh(() => (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 5) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 3) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore - 4) || (int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == 0), engineSubgrid, 10);
                     }
 
                     enginesStatus = engineSubgrid.GetAllRecordsStatus();
@@ -229,7 +229,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests.SpacecraftTests.e2e
                     for (int i = 0; i < enginesStatus.Count; i++)
                     {
                         var statusBefore = int.Parse(enginesStatus[i]);
-                        AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore, spacecraftForm, 10, true);
+                        AssertTrueWithRefresh(() => int.Parse(engineSubgrid.GetRecordStatus(i + 1)) == statusBefore, engineSubgrid, 10);
                     }
                 });
             }
