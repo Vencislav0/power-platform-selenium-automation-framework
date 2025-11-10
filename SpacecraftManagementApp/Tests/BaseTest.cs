@@ -18,7 +18,7 @@ using OpenQA.Selenium.Support.UI;
 namespace Automation_Framework.SpacecraftManagementApp.Tests
 {
     [AllureNUnit]
-    [AllureSuite("Default Suite")]
+    [AllureSuite("Spacecraft Management")]
     public class BaseTest
     {
         protected Random random = new Random();
