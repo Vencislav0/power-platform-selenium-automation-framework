@@ -86,7 +86,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Tests
             Assert.Fail($"Test failed. {ex}");
         }
 
-        protected void RunTest(Action testSteps, Action cleanup = null)
+        protected void RunTestWithCleanup(Action testSteps, Action cleanup = null)
         {
             try
             {
