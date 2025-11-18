@@ -53,9 +53,16 @@ namespace Automation_Framework.Framework.Utilities
             {
                 elements = wait.Until(driver =>
                 {
-                    var foundElements = driver.FindElements(locator);
-                    Logger.Debug($"Found {foundElements.Count} elements... checking visibility");
-                    return foundElements.All(e => e.Displayed) && foundElements.Count > 0 ? foundElements : null;
+                    try
+                    {
+                        var foundElements = driver.FindElements(locator);
+                        Logger.Debug($"Found {foundElements.Count} elements... checking visibility");
+                        return foundElements.Count > 0 && foundElements.All(e => e.Displayed) ? foundElements : null;
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        return null;
+                    }
                 }).ToList();
             }
             catch (WebDriverTimeoutException)
@@ -63,11 +70,7 @@ namespace Automation_Framework.Framework.Utilities
                 Logger.Warn("Timeout waiting for visible elements. Returning empty list.");
                 elements = new List<IWebElement>();
             }
-            catch (StaleElementReferenceException)
-            {
-                return null;
-            }
-
+            
             return elements;
         }
 
@@ -79,19 +82,22 @@ namespace Automation_Framework.Framework.Utilities
             {
                 elements = wait.Until(driver =>
                 {
-                    var foundElements = driver.FindElements(locator);
-                    Logger.Debug($"Found {foundElements.Count} elements... checking visibility");
-                    return foundElements.All(e => e.Displayed) && foundElements.Count > 0 ? foundElements : null;
+                    try
+                    {
+                        var foundElements = driver.FindElements(locator);
+                        Logger.Debug($"Found {foundElements.Count} elements... checking visibility");
+                        return foundElements.Count > 0 && foundElements.All(e => e.Displayed) ? foundElements : null;
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        return null;
+                    }
                 }).ToList();
             }
             catch (WebDriverTimeoutException)
             {
                 Logger.Warn("Timeout waiting for visible elements. Returning empty list.");
                 elements = new List<IWebElement>();
-            }
-            catch (StaleElementReferenceException)
-            {
-                return null;
             }
 
             return elements;
@@ -185,7 +191,8 @@ namespace Automation_Framework.Framework.Utilities
                     Logger.Debug($"Before: {textBefore}, After: {elementTextAfter}");
 
 
-                    return textBefore != elementTextAfter;
+
+                    return textBefore.Trim() != elementTextAfter.Trim();
                 }
                 catch (StaleElementReferenceException)
                 {
@@ -194,8 +201,7 @@ namespace Automation_Framework.Framework.Utilities
                     return false;
                 }
                 catch (Exception ex)
-                {
-                    // Optionally log the error if needed
+                {                    
                     Logger.Debug($"Error while waiting: {ex.Message}");
                     return false;
                 }

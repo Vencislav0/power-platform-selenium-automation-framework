@@ -22,7 +22,10 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         protected Choice isArmedChoice;
         protected Label errorMessage;
         protected Button errorMessageOkButton;
-        public SpacecraftForm(IWebDriver driver) : base(driver, By.XPath(""), "Spacecraft Form")  
+        protected Label engineTab;
+        protected Button createMaintenanceButton;
+       
+        public SpacecraftForm(IWebDriver driver) : base(driver, By.XPath("//div[@data-id='grid-container']"), "Spacecraft Form")  
         {
             countryLookup = new Lookup(driver, By.XPath("//input[@aria-label='Country, Lookup']"), LookupTypes.Country, "Country Lookup");
             spaceportLookup = new Lookup(driver, By.XPath("//input[@aria-label='Spaceport, Lookup']"), LookupTypes.Spaceport, "Spaceport Lookup");
@@ -35,6 +38,10 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
 
             errorMessage = new Label(driver, By.XPath("//span[@data-id='errorDialog_subtitle']"), "Error Message");
             errorMessageOkButton = new Button(driver, By.XPath("//button[@data-id='errorOkButton']"), "Error Message OK Button");
+
+            createMaintenanceButton = new Button(driver, By.XPath("//span[text()='Create Maintenance']"), "Create Maintenance Button");
+
+            engineTab = new Label(driver, By.XPath("//li[@aria-label='Engines']"), "Engines Tab");
         }
 
         public bool IsOrganisationTypeFieldDisplayed()
@@ -50,16 +57,11 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
         public bool IsOperatingCompanyDisplayed()
         {
             return operatingCompanyLookup.IsDisplayed(Timeouts.EXTRA_SHORT);
-        }
-
-        public void FillName(string input)
-        {
-            CompleteField("Name", input);           
-        }        
+        }           
 
         public void FillRandomYear()
         {
-            CompleteField("Year Of Manifacturer", "2000");
+            CompleteField("Year Of Manifacturer", $"{random.Next(1990, 2026)}");
         }
 
         public void ChangeRegistrationNumber(string input)
@@ -97,9 +99,9 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
             fleetLookup.EnterValue(input);
         }
 
-        public void SelectIsArmed(string input)
+        public void SelectIsArmed(IsArmedChoices value)
         {
-            isArmedChoice.SelectChoice(input);
+            isArmedChoice.SelectChoice(value.ToString());
         }
 
         public void SelectOrganizationType(string input)
@@ -127,6 +129,24 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft
             errorMessageOkButton.Click();
         }
 
+        public void ClickCreateMaintenanceButton()
+        {
+            if (createMaintenanceButton.IsDisplayed(Timeouts.EXTRA_SHORT))
+            {
+                createMaintenanceButton.Click();
+            }
+            else
+            {
+                overflowButton.Click();
+                createMaintenanceButton.Click();
+            }
+           
+        }
 
+        public void NavigateToEnginesTab()
+        {
+            engineTab.Click();
+        }
+        
     }
 }

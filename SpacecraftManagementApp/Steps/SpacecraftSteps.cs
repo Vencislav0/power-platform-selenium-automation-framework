@@ -1,10 +1,12 @@
 ﻿using Allure.Net.Commons;
 using Automation_Framework.Framework.PowerApps.Constants;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms;
+using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Engine;
 using Automation_Framework.SpacecraftManagementApp.Pages.Forms.Spacecraft;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +15,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
     public static class SpacecraftSteps
     {
 
-        public static void CreateMilitarySpacecraft(SpacecraftForm spacecraftForm, SideMapForm sidemapForm)
+        public static void CreateMilitarySpacecraft(SpacecraftForm spacecraftForm)
         {
 
             AllureApi.Step("Filling Name and Year Of Manifacturer fields", () =>
@@ -39,7 +41,7 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
 
             AllureApi.Step("Selecting Is Armed? option to Yes", () =>
             {
-                spacecraftForm.SelectIsArmed(IsArmedChoices.Yes.ToString());
+                spacecraftForm.SelectIsArmed(IsArmedChoices.Yes);
             });
 
             AllureApi.Step("Selecting Fleet Military Fleet", () =>
@@ -52,6 +54,49 @@ namespace Automation_Framework.SpacecraftManagementApp.Steps
                 spacecraftForm.ClickSaveButtonFromToolBar(true);
             });
 
+        }
+
+        public static int GetEngineCount(SpacecraftForm spacecraftForm)
+        {
+            var engineCount = 0;   
+                if (int.TryParse(spacecraftForm.GetFieldValue("Engine Count"), out int result))
+                {
+                    engineCount = result;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Couldn't parse the engine count something went wrong.");
+                }
+
+                return engineCount;          
+        }
+
+        public static void AddEnginesToSpacecraft(int amount, SpacecraftForm spacecraftForm, EnginesSubgrid engineSubgrid, LookupRecordsForm lookupRecordsForm)
+        {
+            AllureApi.Step($"Adding {amount} engines to spacecraft", () =>
+            {
+                spacecraftForm.NavigateToEnginesTab();
+
+                engineSubgrid.ClickAddExistingRecordButton();
+                lookupRecordsForm.ClickAllRecordsButton();
+                for (int i = 1; i <= amount; i++)
+                {
+                    lookupRecordsForm.addRecord(1);
+                }
+                Thread.Sleep(500);
+                lookupRecordsForm.ClickAddButton();
+            });
+        }
+
+        public static void AddNewEnginesToSpacecraft(int amount, SpacecraftForm spacecraftForm, EngineForm engineForm, EnginesSubgrid engineSubgrid, string engineStatus, string engineName)
+        {
+            spacecraftForm.NavigateToEnginesTab();
+
+            for (int i = 1; i <= amount; i++)
+            {
+                engineSubgrid.ClickNewRecordButton();
+                CommonSteps.CreateEngine(engineForm, engineStatus, engineName);
+            }
         }
 
         public static void DeleteSpacecraft(SpacecraftForm spacecraftForm, SideMapForm sidemapForm, SpacecraftView spacecraftView, string registrationNumber)

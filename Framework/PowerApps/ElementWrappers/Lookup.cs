@@ -57,7 +57,7 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 GetElement(Timeouts.EXTRA_SHORT).SendKeys(value.Trim());                
                 Logger.Debug($"value sent: {value}");
                 GetElement(Timeouts.EXTRA_SHORT).Click();
-                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.EXTRA_SHORT);
+                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.DEFAULT_WAIT);
                 Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
                 recordsList.GetElementAt(0).Click();
 
@@ -66,9 +66,25 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
             {
                 Logger.Debug("Something went wrong. Attempting fix by clicking Search Button");
                 lookupSearchButton.Click();
-                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.WAIT_FOR_INTERVAL);
+                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.DEFAULT_INTERVAL);
                 recordsList.GetElementAt(0).Click();
 
+            }
+            catch (StaleElementReferenceException)
+            {
+                Logger.Debug("Encountered stale element. Retrying..");
+                Logger.Debug($"Sending value to Lookup: {name}");
+                RemoveRecordFromLookup();
+                customWaits.WaitUntilVisible();
+                customWaits.WaitUntilEnabled();
+                GetElement(Timeouts.EXTRA_SHORT).Click();
+                //Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
+                GetElement(Timeouts.EXTRA_SHORT).SendKeys(value.Trim());
+                Logger.Debug($"value sent: {value}");
+                GetElement(Timeouts.EXTRA_SHORT).Click();
+                customWaits.WaitUntilLookupRecordsLoad(config, Timeouts.DEFAULT_WAIT);
+                Thread.Sleep(Timeouts.WAIT_FOR_INTERVAL);
+                recordsList.GetElementAt(0).Click();
             }
             catch (Exception)
             {
@@ -76,11 +92,12 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
                 throw;
             }
             
+            
         }
 
         public void RemoveRecordFromLookup()
         {           
-            if (recordOnLookup.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
+            if (recordOnLookup.IsDisplayed(Timeouts.WAIT_FOR_INTERVAL))
             {
                 recordXButton.Click();
             }            
@@ -88,9 +105,10 @@ namespace Automation_Framework.Framework.PowerApps.ElementWrappers
 
         public void ClickRecordOnLookup()
         {
-            if (recordOnLookup.IsDisplayed(Timeouts.DEFAULT_INTERVAL))
+            if (recordOnLookup.IsDisplayed(Timeouts.WAIT_FOR_INTERVAL))
             {
                 recordOnLookup.Click();
+                customWaits.WaitUntilRecordFormLoads();
             }
         }
 

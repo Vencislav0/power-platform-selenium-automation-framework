@@ -20,8 +20,8 @@ namespace Automation_Framework.SpacecraftManagementApp.Pages.Forms
         public void SelectArea(string input)
         {
             ClickFormElement();
-
-            var areaOption = new Label(_driver, By.XPath("//li[contains(@data-id, 'area_fleet')]"), $"{input} Area");
+         
+            var areaOption = new Label(_driver, By.XPath($"//li[contains(@title, '{input}')]"), $"{input} Area");
 
             areaOption.Click();
         }
